@@ -18,6 +18,12 @@ function clean_memory() {
 }
 
 module.exports.loop = function () {
+	let spawn1 = Game.spawns.Spawn1;
+	let sources = spawn1.room.find(FIND_SOURCES);
+	_.forEach(sources, source => {
+		let path = spawn1.pos.findPathTo(source, {ignoreCreeps : true});
+		spawn1.room.visual.poly(path, {stroke : 'black'});
+	});
 	clean_memory();
 	_.forEach (Game.creeps, creep => {
 		if (creep.spawning) {
