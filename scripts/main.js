@@ -4,8 +4,14 @@ Creep.prototype.moveTowards = function(target) {
 	}
 };
 
+Creep.prototype.upgrade = function(room) {
+		if (creep.upgradeController(room.controller) == ERR_NOT_IN_RANGE) {
+			creep.moveTo(room.controller);
+		}
+}
+
 Source.prototype.slots = function() {
-	return this.room.adjacent_plains(this.pos).length;
+	return this.room.adjacent_plains(this.pos);
 };
 
 Room.prototype.sources = function() {
@@ -21,11 +27,20 @@ Room.prototype.adjacent_plains = function(pos) {
 	return _.filter(area, {type : 'terrain', terrain: 'plain'});
 };
 
+function clean_memory() {
+	_.forEach (Memory.creeps, (creep, name) => {
+		if (!Game.creeps[name]) {
+			delete Memory.creeps[name];
+		}
+	});
+};
+
 module.exports.loop = function () {
+	clean_memory()
 	_.forEach (Game.creeps, creep => {
 		var sources = creep.room.find(FIND_SOURCES);
 		for (let source of sources) {
-			console.log(source.slots());
+			console.log(source.slots().length);
 		}
 		if (creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
 			creep.moveTo(sources[0]);
