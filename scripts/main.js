@@ -1,14 +1,60 @@
+var NONE = "none";
+var HARVEST = "harvest";
+var UPGRADE = "upgrade";
+
 Creep.prototype.moveTowards = function(target) {
 	if (this.getRangeTo(target) > 1) {
 		this.moveTo(target);
 	}
 };
 
-Creep.prototype.upgrade = function(room) {
-		if (creep.upgradeController(room.controller) == ERR_NOT_IN_RANGE) {
-			creep.moveTo(room.controller);
+Creep.prototype.upgradeRoom = function(room) {
+		if (this.upgradeController(room.controller) == ERR_NOT_IN_RANGE) {
+			this.moveTo(room.controller);
 		}
 }
+
+Creep.prototype.harvestRoom = function(room) {
+	var sources = room.find(FIND_SOURCES);
+	if (this.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
+		this.moveTo(sources[0]);
+	}
+};
+
+Creep.prototype.set_task = function(task) {
+	this.memory["task"] = task;
+};
+
+Creep.prototype.get_task = function() {
+	if (!this.memory["task"]) {
+		return NONE;
+	}
+	return this.memory["task"];
+};
+
+Creep.prototype.empty = function() {
+	return _.sum(this.carry) == 0;
+};
+
+Creep.prototype.full = function() {
+	return _.sum(this.carry) == this.carryCapacity;
+};
+
+Creep.prototype.transition = function() {
+	if (this.empty()) {
+		this.set_task(HARVEST);
+	} else if (this.full()) {
+		this.set_task(UPGRADE);
+	}
+};
+
+Creep.prototype.action = function(room) {
+	if (this.get_task() == HARVEST) {
+		this.harvestRoom(room)
+	} else if (this.get_task() == UPGRADE) {
+		this.upgradeRoom(room)
+	}
+};
 
 Source.prototype.slots = function() {
 	return this.room.adjacent_plains(this.pos);
@@ -38,12 +84,7 @@ function clean_memory() {
 module.exports.loop = function () {
 	clean_memory()
 	_.forEach (Game.creeps, creep => {
-		var sources = creep.room.find(FIND_SOURCES);
-		for (let source of sources) {
-			console.log(source.slots().length);
-		}
-		if (creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
-			creep.moveTo(sources[0]);
-		}
+		creep.transition();
+		creep.action(creep.room);
 	});
 };
