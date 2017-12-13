@@ -1,11 +1,11 @@
 module.exports = {
-	role : 'UPGRADE_HARVESTER',
+	role : 'SPAWNFILLER_HARVESTER',
 	parts : [WORK, CARRY, CARRY, MOVE, MOVE],
 	action : function(creep, room) {
 		if (creep.task == HARVEST) {
 			creep.harvestRoom(room);
 		} else if (creep.task == UPGRADE) {
-			creep.upgradeRoom(room);
+			creep.spawnfillRoom(room);
 		}
 	},
 	transition : function(creep, room) {

@@ -1,6 +1,6 @@
-global.NONE = "none";
-global.HARVEST = "harvest";
-global.UPGRADE = "upgrade";
+global.NONE = 'none';
+global.HARVEST = 'harvest';
+global.UPGRADE = 'upgrade';
 
 Creep.prototype.upgradeRoom = function(room) {
 		if (this.upgradeController(room.controller) == ERR_NOT_IN_RANGE) {
@@ -15,7 +15,14 @@ Creep.prototype.harvestRoom = function(room) {
 	}
 };
 
-Object.defineProperty(Creep.prototype, "task", {
+Creep.prototype.spawnfillRoom = function(room) {
+	var spawns = room.find(FIND_MY_STRUCTURES, {filter : {structureType : STRUCTURE_SPAWN}});
+	if (this.transfer(spawns[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+		this.moveTo(spawns[0], {visualizePathStyle:{}});
+	}
+};
+
+Object.defineProperty(Creep.prototype, 'task', {
 	get : function() {
 		if (!this.memory.task) {
 			return NONE;
@@ -27,7 +34,7 @@ Object.defineProperty(Creep.prototype, "task", {
 	}
 });
 
-Object.defineProperty(Creep.prototype, "role", {
+Object.defineProperty(Creep.prototype, 'role', {
 	get : function() {
 		if (!this.memory.role) {
 			return NONE;
@@ -82,7 +89,7 @@ Room.prototype.adjacent_plains = function(pos) {
 	return _.filter(area, {type : 'terrain', terrain: 'plain'});
 };
 
-Object.defineProperty(StructureSpawn.prototype, "creep_count", {
+Object.defineProperty(StructureSpawn.prototype, 'creep_count', {
 	get : function() {
 		if(!this.memory.creep_count) {
 			return 0;
@@ -95,7 +102,9 @@ Object.defineProperty(StructureSpawn.prototype, "creep_count", {
 });
 
 StructureSpawn.prototype.spawn = function(role) {
-	let ret = this.spawnCreep(role.parts, role.role + this.creep_count, {memory : {role : role.role}});
-	this.creep_count += 1;
+	let ret = this.spawnCreep(role.parts, role.role + '_' + this.creep_count, {memory : {role : role.role}});
+	if (ret == OK) {
+		this.creep_count += 1;
+	}
 	return ret;
 };
