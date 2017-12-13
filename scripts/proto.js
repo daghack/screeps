@@ -6,7 +6,7 @@ Creep.prototype.upgradeRoom = function(room) {
 		if (this.upgradeController(room.controller) == ERR_NOT_IN_RANGE) {
 			this.moveTo(room.controller, {visualizePathStyle:{}});
 		}
-}
+};
 
 Creep.prototype.harvestRoom = function(room) {
 	var sources = room.find(FIND_SOURCES);
@@ -17,25 +17,25 @@ Creep.prototype.harvestRoom = function(room) {
 
 Object.defineProperty(Creep.prototype, "task", {
 	get : function() {
-		if (!this.memory["task"]) {
+		if (!this.memory.task) {
 			return NONE;
 		}
-		return this.memory["task"];
+		return this.memory.task;
 	},
 	set : function(t) {
-		this.memory["task"] = t;
+		this.memory.task = t;
 	}
 });
 
 Object.defineProperty(Creep.prototype, "role", {
 	get : function() {
-		if (!this.memory["role"]) {
+		if (!this.memory.role) {
 			return NONE;
 		}
-		return this.memory["role"];
+		return this.memory.role;
 	},
 	set : function(r) {
-		this.memory["role"] = r;
+		this.memory.role = r;
 	}
 });
 
@@ -74,10 +74,10 @@ Room.prototype.sources = function() {
 };
 
 Room.prototype.adjacent_plains = function(pos) {
-	let top_b = Math.max(0, pos.y-1)
-	let bottom_b = Math.min(49, pos.y+1)
-	let left_b = Math.max(0, pos.x-1)
-	let right_b = Math.min(49, pos.x+1)
+	let top_b = Math.max(0, pos.y-1);
+	let bottom_b = Math.min(49, pos.y+1);
+	let left_b = Math.max(0, pos.x-1);
+	let right_b = Math.min(49, pos.x+1);
 	let area = this.lookAtArea(top_b, left_b, bottom_b, right_b, true);
 	return _.filter(area, {type : 'terrain', terrain: 'plain'});
 };

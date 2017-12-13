@@ -3,10 +3,9 @@ require('proto');
 var harvester = require('harvester');
 var upgrade_harvester = require('upgrade_harvester');
 
-var roles = {
-	harvester.role = harvester,
-	upgrade_harvester.role = upgrade_harvester
-};
+var roles = {};
+roles[harvester.role] = harvester;
+roles[upgrade_harvester.role] = upgrade_harvester;
 
 function clean_memory() {
 	_.forEach (Memory.creeps, (creep, name) => {
@@ -14,10 +13,10 @@ function clean_memory() {
 			delete Memory.creeps[name];
 		}
 	});
-};
+}
 
 module.exports.loop = function () {
-	clean_memory()
+	clean_memory();
 	_.forEach (Game.creeps, creep => {
 		if (creep.spawning) {
 			return;
