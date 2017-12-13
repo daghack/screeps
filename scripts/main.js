@@ -24,6 +24,12 @@ module.exports.loop = function () {
 		let path = spawn1.pos.findPathTo(source, {ignoreCreeps : true});
 		spawn1.room.visual.poly(path, {stroke : 'black'});
 	});
+	_.forEach(sources, source => {
+		let path = spawn1.room.controller.pos.findPathTo(source, {ignoreCreeps : true});
+		spawn1.room.visual.poly(path, {stroke : 'black'});
+	});
+	let path = spawn1.room.controller.pos.findPathTo(spawn1, {ignoreCreeps : true});
+	spawn1.room.visual.poly(path, {stroke : 'black'});
 	clean_memory();
 	_.forEach (Game.creeps, creep => {
 		if (creep.spawning) {
