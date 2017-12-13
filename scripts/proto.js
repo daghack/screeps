@@ -27,16 +27,17 @@ Object.defineProperty(Creep.prototype, "task", {
 	}
 });
 
-Creep.prototype.set_task = function(task) {
-	this.memory["task"] = task;
-};
-
-Creep.prototype.get_task = function() {
-	if (!this.memory["task"]) {
-		return NONE;
+Object.defineProperty(Creep.prototype, "role", {
+	get : function() {
+		if (!this.memory["role"]) {
+			return NONE;
+		}
+		return this.memory["role"];
+	},
+	set : function(r) {
+		this.memory["role"] = r;
 	}
-	return this.memory["task"];
-};
+});
 
 Creep.prototype.empty = function() {
 	return _.sum(this.carry) == 0;
