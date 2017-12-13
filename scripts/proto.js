@@ -56,9 +56,9 @@ Creep.prototype.transition = function() {
 };
 
 Creep.prototype.action = function(room) {
-	if (this.get_task() == HARVEST) {
+	if (this.task == HARVEST) {
 		this.harvestRoom(room)
-	} else if (this.get_task() == UPGRADE) {
+	} else if (this.task == UPGRADE) {
 		this.upgradeRoom(room)
 	}
 };
