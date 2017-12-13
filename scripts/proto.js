@@ -81,3 +81,21 @@ Room.prototype.adjacent_plains = function(pos) {
 	let area = this.lookAtArea(top_b, left_b, bottom_b, right_b, true);
 	return _.filter(area, {type : 'terrain', terrain: 'plain'});
 };
+
+Object.defineProperty(StructureSpawn.prototype, "creep_count", {
+	get : function() {
+		if(!this.memory.creep_count) {
+			return 0;
+		}
+		return this.memory.creep_count;
+	},
+	set : function(x) {
+		this.memory.creep_count = x;
+	}
+});
+
+StructureSpawn.prototype.spawn = function(role) {
+	let ret = this.spawnCreep(role.parts, role.role + this.creep_count, {memory : {role : role.role}});
+	this.creep_count += 1;
+	return ret;
+};
