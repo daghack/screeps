@@ -1,6 +1,7 @@
-var NONE = "none";
-var HARVEST = "harvest";
-var UPGRADE = "upgrade";
+const NONE = "none";
+const HARVEST = "harvest";
+const UPGRADE = "upgrade";
+const ROLE_HARVESTER = "harvester";
 
 Creep.prototype.upgradeRoom = function(room) {
 		if (this.upgradeController(room.controller) == ERR_NOT_IN_RANGE) {
