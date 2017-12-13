@@ -1,5 +1,5 @@
 Creep.prototype.moveTowards = function(target) {
-	if this.getRangeTo(target) > 1 {
+	if (this.getRangeTo(target) > 1) {
 		this.moveTo(target);
 	}
 };
@@ -8,11 +8,11 @@ Source.prototype.slots = function() {
 	return this.room.adjacent_plains(this.pos).length;
 };
 
-Room.protototype.sources = function() {
+Room.prototype.sources = function() {
 	return this.find(FIND_SOURCES);
 };
 
-Room.protototype.adjacent_plains = function(pos) {
+Room.prototype.adjacent_plains = function(pos) {
 	let top_b = Math.max(0, pos.y-1)
 	let bottom_b = Math.min(49, pos.y+1)
 	let left_b = Math.max(0, pos.x-1)
@@ -22,13 +22,13 @@ Room.protototype.adjacent_plains = function(pos) {
 };
 
 module.exports.loop = function () {
-	for(let creep of Game.creeps) {
+	for (let creep of Game.creeps) {
 	}
 	var sources = creep.room.find(FIND_SOURCES);
-	for(let source of sources) {
+	for (let source of sources) {
 		console.log(source.slots());
 	}
-	if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
+	if (creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
 		creep.moveTo(sources[0]);
 	}
 };
