@@ -2,22 +2,16 @@ var NONE = "none";
 var HARVEST = "harvest";
 var UPGRADE = "upgrade";
 
-Creep.prototype.moveTowards = function(target) {
-	if (this.getRangeTo(target) > 1) {
-		this.moveTo(target);
-	}
-};
-
 Creep.prototype.upgradeRoom = function(room) {
 		if (this.upgradeController(room.controller) == ERR_NOT_IN_RANGE) {
-			this.moveTo(room.controller);
+			this.moveTo(room.controller, {visualizePathStyle:{}});
 		}
 }
 
 Creep.prototype.harvestRoom = function(room) {
 	var sources = room.find(FIND_SOURCES);
 	if (this.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
-		this.moveTo(sources[0]);
+		this.moveTo(sources[0], {visualizePathStyle:{}});
 	}
 };
 
@@ -84,6 +78,9 @@ function clean_memory() {
 module.exports.loop = function () {
 	clean_memory()
 	_.forEach (Game.creeps, creep => {
+		if (creep.spawning) {
+			return;
+		}
 		creep.transition();
 		creep.action(creep.room);
 	});
