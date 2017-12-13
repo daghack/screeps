@@ -17,8 +17,13 @@ Creep.prototype.harvestRoom = function(room) {
 
 Object.defineProperty(Creep.prototype, "task", {
 	get : function() {
+		if (!this.memory["task"]) {
+			return NONE;
+		}
+		return this.memory["task"];
 	},
-	set : function(x) {
+	set : function(t) {
+		this.memory["task"] = t;
 	}
 });
 
@@ -43,9 +48,9 @@ Creep.prototype.full = function() {
 
 Creep.prototype.transition = function() {
 	if (this.empty()) {
-		this.set_task(HARVEST);
+		this.task = HARVEST;
 	} else if (this.full()) {
-		this.set_task(UPGRADE);
+		this.task = UPGRADE;
 	}
 };
 
