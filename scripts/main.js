@@ -22,13 +22,13 @@ Room.prototype.adjacent_plains = function(pos) {
 };
 
 module.exports.loop = function () {
-	for (let creep of Game.creeps) {
-	}
-	var sources = creep.room.find(FIND_SOURCES);
-	for (let source of sources) {
-		console.log(source.slots());
-	}
-	if (creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
-		creep.moveTo(sources[0]);
-	}
+	_.forEach (Game.creeps, creep => {
+		var sources = creep.room.find(FIND_SOURCES);
+		for (let source of sources) {
+			console.log(source.slots());
+		}
+		if (creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
+			creep.moveTo(sources[0]);
+		}
+	});
 };
