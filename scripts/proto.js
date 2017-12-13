@@ -1,7 +1,6 @@
 const NONE = "none";
 const HARVEST = "harvest";
 const UPGRADE = "upgrade";
-const ROLE_HARVESTER = "harvester";
 
 Creep.prototype.upgradeRoom = function(room) {
 		if (this.upgradeController(room.controller) == ERR_NOT_IN_RANGE) {
@@ -48,19 +47,21 @@ Creep.prototype.full = function() {
 	return _.sum(this.carry) == this.carryCapacity;
 };
 
-Creep.prototype.transition = function() {
-	if (this.empty()) {
-		this.task = HARVEST;
-	} else if (this.full()) {
-		this.task = UPGRADE;
+Creep.prototype.action = function(room, roles, default_module) {
+	if (roles[this.role]) {
+		roles[this.role].action(this, room);
+	} else {
+		//Default Behavior
+		default_module.action(this, room);
 	}
 };
 
-Creep.prototype.action = function(room) {
-	if (this.task == HARVEST) {
-		this.harvestRoom(room)
-	} else if (this.task == UPGRADE) {
-		this.upgradeRoom(room)
+Creep.prototype.transition = function(room, roles, default_module) {
+	if (roles[this.role]) {
+		roles[this.role].transition(this, room);
+	} else {
+		//Default Behavior
+		default_module.transition(this, room);
 	}
 };
 

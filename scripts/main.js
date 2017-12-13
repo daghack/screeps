@@ -1,5 +1,12 @@
 require('proto');
+
 var harvester = require('harvester');
+var upgrade_harvester = require('upgrade_harvester');
+
+var roles = {
+	harvester.role = harvester,
+	upgrade_harvester.role = upgrade_harvester
+};
 
 function clean_memory() {
 	_.forEach (Memory.creeps, (creep, name) => {
@@ -15,7 +22,7 @@ module.exports.loop = function () {
 		if (creep.spawning) {
 			return;
 		}
-		creep.transition();
-		creep.action(creep.room);
+		creep.transition(creep.room, roles, upgrade_harvester);
+		creep.action(creep.room, roles, upgrade_harvester);
 	});
 };
