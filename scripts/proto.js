@@ -15,6 +15,13 @@ Creep.prototype.harvestRoom = function(room) {
 	}
 };
 
+Object.defineProperty(Creep.prototype, "task", {
+	get : function() {
+	},
+	set : function(x) {
+	}
+});
+
 Creep.prototype.set_task = function(task) {
 	this.memory["task"] = task;
 };
