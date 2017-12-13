@@ -4,7 +4,7 @@ module.exports = {
 	action : function(creep, room) {
 		if (creep.task == HARVEST) {
 			creep.harvestRoom(room);
-		} else if (creep.task == UPGRADE) {
+		} else if (creep.task == SPAWNFILL) {
 			creep.spawnfillRoom(room);
 		}
 	},
@@ -12,7 +12,7 @@ module.exports = {
 		if (creep.empty()) {
 			creep.task = HARVEST;
 		} else if (creep.full()) {
-			creep.task = UPGRADE;
+			creep.task = SPAWNFILL;
 		}
 	}
 };

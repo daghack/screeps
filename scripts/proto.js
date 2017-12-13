@@ -1,6 +1,7 @@
 global.NONE = 'none';
 global.HARVEST = 'harvest';
 global.UPGRADE = 'upgrade';
+global.SPAWNFILL = 'spawnfill';
 
 Creep.prototype.upgradeRoom = function(room) {
 		if (this.upgradeController(room.controller) == ERR_NOT_IN_RANGE) {
