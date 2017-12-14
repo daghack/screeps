@@ -142,10 +142,14 @@ StructureSpawn.prototype.add_initial_build_orders = function() {
 			_.forEach(spath, position => {
 				this.room.add_to_build(position, STRUCTURE_ROAD);
 			});
-			let cpath = this.pos.findPathTo(this.room.controller, {ignoreCreeps : true, ignoreRoads : true});
+			let cpath = source.pos.findPathTo(this.room.controller, {ignoreCreeps : true, ignoreRoads : true});
 			_.forEach(cpath, position => {
 				this.room.add_to_build(position, STRUCTURE_ROAD);
 			});
+		});
+		let cpath = this.pos.findPathTo(this.room.controller, {ignoreCreeps : true, ignoreRoads : true});
+		_.forEach(cpath, position => {
+			this.room.add_to_build(position, STRUCTURE_ROAD);
 		});
 		this.memory.road_orders_issued = true;
 	}
