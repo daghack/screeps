@@ -28,6 +28,7 @@ module.exports.loop = function () {
 			}
 		});
 		let sources = room.find(FIND_SOURCES);
+		let count = 0;
 		_.forEach(sources, source => {
 			source.init();
 		});

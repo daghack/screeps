@@ -4,9 +4,9 @@ global.UPGRADE = 'upgrade';
 global.SPAWNFILL = 'spawnfill';
 global.memory_property = function(obj, key, def) {
 	Object.defineProperty(obj, key, {
-		writeable : true,
 		get : function() {
 			if (!this.memory[key]) {
+				console.log("DEFAULT: " + JSON.stringify(def));
 				this.memory[key] = def;
 			}
 			return this.memory[key];

@@ -3,12 +3,12 @@ if (!Memory.sources) {
 }
 
 Object.defineProperty(Source.prototype, 'memory', {
-	writeable : true,
 	get : function() {
-		console.log(this.id);
+		console.log("ALL: " + JSON.stringify(Memory.sources));
 		if (!Memory.sources[this.id]) {
 			Memory.sources[this.id] = {};
 		}
+		console.log(JSON.stringify("SOLO: " + JSON.stringify(Memory.sources[this.id])));
 		return Memory.sources[this.id];
 	},
 	set : function(x) {
@@ -18,12 +18,13 @@ Object.defineProperty(Source.prototype, 'memory', {
 
 memory_property(Source.prototype, 'initialized', false);
 memory_property(Source.prototype, 'assigned_harvesters', {});
-memory_property(Source.prototype, 'slots', []);
+memory_property(Source.prototype, 'slots', new Array());
 
 Source.prototype.init = function(manager) {
 	if (this.initialized) {
 		return;
 	}
+	console.log(this.id);
 	let slots = this.room.adjacent_plains(this.pos);
 	_.forEach(slots, slot => {
 		let roomPos = new RoomPosition(slot.x, slot.y, this.room.name);
