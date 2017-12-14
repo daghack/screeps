@@ -17,8 +17,8 @@ Object.defineProperty(Source.prototype, 'memory', {
 });
 
 memory_property(Source.prototype, 'initialized', false);
-memory_property(Source.prototype, 'assigned_harvesters', {});
-memory_property(Source.prototype, 'slots', new Array());
+memory_property(Source.prototype, 'assigned_harvesters', Object, true);
+memory_property(Source.prototype, 'slots', Array, true);
 
 Source.prototype.init = function(manager) {
 	if (this.initialized) {

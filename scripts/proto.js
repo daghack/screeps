@@ -2,12 +2,16 @@ global.NONE = 'none';
 global.HARVEST = 'harvest';
 global.UPGRADE = 'upgrade';
 global.SPAWNFILL = 'spawnfill';
-global.memory_property = function(obj, key, def) {
+global.memory_property = function(obj, key, def, fresh) {
 	Object.defineProperty(obj, key, {
 		get : function() {
 			if (!this.memory[key]) {
 				console.log("DEFAULT: " + JSON.stringify(def));
-				this.memory[key] = def;
+				if(!fresh) {
+					this.memory[key] = def;
+				} else {
+					this.memory[key] = new def();
+				}
 			}
 			return this.memory[key];
 		},
@@ -75,7 +79,7 @@ Room.prototype.sources = function() {
 	return this.find(FIND_SOURCES);
 };
 
-memory_property(Room.prototype, 'buildlist', {});
+memory_property(Room.prototype, 'buildlist', Object, true);
 
 Room.prototype.add_to_build = function(position, structure) {
 	let index = to_str(position);
