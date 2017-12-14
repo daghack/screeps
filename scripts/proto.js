@@ -42,6 +42,7 @@ Creep.prototype.spawnfillRoom = function(room) {
 };
 
 memory_property(Creep.prototype, 'task', NONE);
+memory_property(Creep.prototype, 'self_managed', false);
 memory_property(Creep.prototype, 'role', NONE);
 
 Creep.prototype.empty = function() {

@@ -27,6 +27,10 @@ module.exports.loop = function () {
 				delete room.buildlist[key];
 			}
 		});
+		let sources = room.find(FIND_SOURCES);
+		_.forEach(sources, source => {
+			source.init();
+		});
 	});
 	let creeptypes = {};
 	_.forEach (Game.creeps, creep => {

@@ -15,10 +15,39 @@ Object.defineProperty(Source.prototype, 'memory', {
 	}
 });
 
-Source.prototype.slots = function() {
-	return this.room.adjacent_plains(this.pos);
+memory_property(Source.prototype, 'initialized', false);
+memory_property(Source.prototype, 'assigned_harvesters', {});
+memory_property(Source.prototype, 'slots', []);
+
+Source.prototype.init = function(manager) {
+	if (this.initialized) {
+		return;
+	}
+	let slots = this.room.adjacent_plains(this.pos);
+	_.forEach(slots, slot => {
+		let roomPos = new RoomPosition(slot.x, slot.y, this.room.name);
+		roomPos.assigned = NONE;
+		this.slots.push(roomPos);
+	});
+	if (manager) {
+		this.request_harvester(manager);
+		//#TODO Move road registering here.
+	}
+	this.initialized = true;
 };
 
-Source.prototype.init = function() {
-	//Move road registering here eventually.
+Source.prototype.assign_harvester = function(harvester) {
+	this.assigned_harvesters[harvester.name] = harvester;
+	let available_slot = _.findIndex(this.slots, 'assigned', NONE);
+	if (available_slot < 0) {
+	//#TODO Do something if slots are filled up?
+		return;
+	}
+	this.slots[available_slot].assigned = harvester.name;
+};
+
+Source.prototype.request_harvester = function(manager) {
+	/*
+		* manager.request_creep([WORK, WORK, MOVE], {self_managed : false, assigned_to : this.id});
+	*/
 };
