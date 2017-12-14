@@ -2,15 +2,14 @@ global.NONE = 'none';
 global.HARVEST = 'harvest';
 global.UPGRADE = 'upgrade';
 global.SPAWNFILL = 'spawnfill';
-global.memory_property = function(obj, key, def, fresh) {
+global.memory_property = function(obj, key, def, is_constructor) {
 	Object.defineProperty(obj, key, {
 		get : function() {
 			if (!this.memory[key]) {
-				console.log("DEFAULT: " + JSON.stringify(def));
-				if(!fresh) {
-					this.memory[key] = def;
-				} else {
+				if(is_constructor) {
 					this.memory[key] = new def();
+				} else {
+					this.memory[key] = def;
 				}
 			}
 			return this.memory[key];
