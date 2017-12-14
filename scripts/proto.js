@@ -2,6 +2,20 @@ global.NONE = 'none';
 global.HARVEST = 'harvest';
 global.UPGRADE = 'upgrade';
 global.SPAWNFILL = 'spawnfill';
+global.memory_property = function(obj, key, def) {
+	Object.defineProperty(obj, key, {
+		writeable : true,
+		get : function() {
+			if (!this.memory[key]) {
+				this.memory[key] = def;
+			}
+			return this.memory[key];
+		},
+		set : function(x) {
+			this.memory[key] = x;
+		}
+	});
+};
 
 function to_str(pos) {
 	return pos.x + '_' + pos.y;
@@ -27,17 +41,19 @@ Creep.prototype.spawnfillRoom = function(room) {
 	}
 };
 
-Object.defineProperty(Creep.prototype, 'task', {
-	get : function() {
-		if (!this.memory.task) {
-			return NONE;
-		}
-		return this.memory.task;
-	},
-	set : function(t) {
-		this.memory.task = t;
-	}
-});
+memory_property(Creep.prototype, 'task', NONE);
+
+//Object.defineProperty(Creep.prototype, 'task', {
+//	get : function() {
+//		if (!this.memory.task) {
+//			return NONE;
+//		}
+//		return this.memory.task;
+//	},
+//	set : function(t) {
+//		this.memory.task = t;
+//	}
+//});
 
 Object.defineProperty(Creep.prototype, 'role', {
 	get : function() {
@@ -75,10 +91,6 @@ Creep.prototype.transition = function(room, roles, default_module) {
 		//Default Behavior
 		default_module.transition(this, room);
 	}
-};
-
-Source.prototype.slots = function() {
-	return this.room.adjacent_plains(this.pos);
 };
 
 Room.prototype.sources = function() {
