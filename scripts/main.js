@@ -1,4 +1,5 @@
 require('proto');
+require('source.proto');
 
 var harvester = require('harvester');
 var upgrade_harvester = require('upgrade_harvester');
