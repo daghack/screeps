@@ -20,7 +20,7 @@ function clean_memory() {
 module.exports.loop = function () {
 	let spawn1 = Game.spawns.Spawn1;
 	spawn1.add_initial_build_orders();
-	spawn1.buildlist_visual();
+	spawn1.room.buildlist_visual();
 	let path = spawn1.room.controller.pos.findPathTo(spawn1, {ignoreCreeps : true, ignoreRoads : true});
 	spawn1.room.visual.poly(path, {stroke : 'black'});
 	clean_memory();

@@ -152,8 +152,8 @@ StructureSpawn.prototype.add_initial_build_orders = function() {
 	return OK;
 };
 
-StructureSpawn.prototype.buildlist_visual = function() {
+Room.prototype.buildlist_visual = function() {
 	_.forEach(this.buildlist, position => {
-		this.room.visual.circle(position, {fill : 'transparent', lineStyle : 'dashed', radius : 0.5});
+		this.visual.circle(position, {fill : 'transparent', lineStyle : 'dashed', radius : 0.5, stroke : 'white'});
 	});
 };
