@@ -139,17 +139,21 @@ StructureSpawn.prototype.add_initial_build_orders = function() {
 		let sources = this.room.find(FIND_SOURCES);
 		_.forEach(sources, source => {
 			let spath = this.pos.findPathTo(source, {ignoreCreeps : true, ignoreRoads : true});
-			this.room.visual.poly(spath, {stroke : 'black'});
 			_.forEach(spath, position => {
 				this.room.add_to_build(position, STRUCTURE_ROAD);
 			});
-			//let cpath = this.pos.findPathTo(this.room.controller, {ignoreCreeps : true, ignoreRoads : true});
-			//this.room.visual.poly(cpath, {stroke : 'black'});
-			//_.forEach(cpath, position => {
-			//	this.room.add_to_build(position, STRUCTURE_ROAD);
-			//});
+			let cpath = this.pos.findPathTo(this.room.controller, {ignoreCreeps : true, ignoreRoads : true});
+			_.forEach(cpath, position => {
+				this.room.add_to_build(position, STRUCTURE_ROAD);
+			});
 		});
 		this.memory.road_orders_issued = true;
 	}
 	return OK;
+};
+
+StructureSpawn.prototype.buildlist_visual = function() {
+	_.forEach(this.buildlist, position => {
+		this.room.visual.circle(position, {fill : 'transparent', lineStyle : 'dashed', radius : 0.5});
+	});
 };

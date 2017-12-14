@@ -19,15 +19,8 @@ function clean_memory() {
 
 module.exports.loop = function () {
 	let spawn1 = Game.spawns.Spawn1;
-	let sources = spawn1.room.find(FIND_SOURCES);
-	_.forEach(sources, source => {
-		let path = spawn1.pos.findPathTo(source, {ignoreCreeps : true});
-		spawn1.room.visual.poly(path, {stroke : 'black'});
-	});
-	_.forEach(sources, source => {
-		let path = spawn1.room.controller.pos.findPathTo(source, {ignoreCreeps : true});
-		spawn1.room.visual.poly(path, {stroke : 'black'});
-	});
+	spawn1.add_initial_build_orders();
+	spawn1.buildlist_visual();
 	let path = spawn1.room.controller.pos.findPathTo(spawn1, {ignoreCreeps : true, ignoreRoads : true});
 	spawn1.room.visual.poly(path, {stroke : 'black'});
 	clean_memory();
