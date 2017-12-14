@@ -3,6 +3,10 @@ global.HARVEST = 'harvest';
 global.UPGRADE = 'upgrade';
 global.SPAWNFILL = 'spawnfill';
 
+function to_str(pos) {
+	return pos.x + '_' + pos.y;
+}
+
 Creep.prototype.upgradeRoom = function(room) {
 		if (this.upgradeController(room.controller) == ERR_NOT_IN_RANGE) {
 			this.moveTo(room.controller, {visualizePathStyle:{}});
@@ -81,6 +85,26 @@ Room.prototype.sources = function() {
 	return this.find(FIND_SOURCES);
 };
 
+Object.defineProperty(Room.prototype, 'buildlist', {
+	get : function() {
+		if (!this.memory.buildlist) {
+			this.memory.buildlist = {};
+		}
+		return this.memory.buildlist;
+	},
+	set : function(x) {
+		this.memory.buildlist = x;
+	},
+	writeable : true
+});
+
+Room.prototype.add_to_build = function(position, structure) {
+	let index = to_str(position);
+	if (!this.buildlist[index]) {
+		this.buildlist[index] = { x : position.x, y : position.y, struct : structure };
+	}
+};
+
 Room.prototype.adjacent_plains = function(pos) {
 	let top_b = Math.max(0, pos.y-1);
 	let bottom_b = Math.min(49, pos.y+1);
@@ -108,4 +132,23 @@ StructureSpawn.prototype.spawn = function(role) {
 		this.creep_count += 1;
 	}
 	return ret;
+};
+
+StructureSpawn.prototype.add_initial_build_orders = function() {
+	if (!this.memory.road_orders_issued) {
+		this.room.find(FIND_SOURCES);
+		_.forEach(sources, source => {
+			let spath = this.pos.findPathTo(source, {ignoreCreeps : true, ignoreRoads : true});
+			this.room.visual.poly(spath, {stroke : 'black'});
+			_.forEach(spath, position => {
+				this.room.add_to_build(position, STRUCTURE_ROAD);
+			});
+			let cpath = this.pos.findPathTo(this.room.controller, {ignoreCreeps : true, ignoreRoads : true});
+			this.room.visual.poly(cpath, {stroke : 'black'});
+			_.forEach(cpath, position => {
+				this.room.add_to_build(position, STRUCTURE_ROAD);
+			});
+		});
+		this.memory.road_orders_issued = true;
+	}
 };
