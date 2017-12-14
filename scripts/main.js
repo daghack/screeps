@@ -27,14 +27,24 @@ module.exports.loop = function () {
 			}
 		});
 	});
-	_.forEach(Game.spawns, spawn => {
-		spawn.add_initial_build_orders();
-	});
+	let creeptypes = {};
 	_.forEach (Game.creeps, creep => {
+		if (!creeptypes[creep.role]) {
+			creeptypes[creep.role] = 0;
+		}
+		creeptypes[creep.role] += 1;
 		if (creep.spawning) {
 			return;
 		}
 		creep.transition(creep.room, roles, spawnfill_harvester);
 		creep.action(creep.room, roles, spawnfill_harvester);
+	});
+	_.forEach(Game.spawns, spawn => {
+		spawn.add_initial_build_orders();
+		if (!creeptypes[spawnfill_harvester.role] || creeptypes[spawnfill_harvester.role] < 2) {
+			spawn.spawn(spawnfill_harvester);
+		} else if (!creeptypes[upgrade_harvester.role] || creeptypes[upgrade_harvester.role] < 3){
+			spawn.spawn(upgrade_harvester);
+		}
 	});
 };
