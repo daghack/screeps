@@ -42,30 +42,7 @@ Creep.prototype.spawnfillRoom = function(room) {
 };
 
 memory_property(Creep.prototype, 'task', NONE);
-
-//Object.defineProperty(Creep.prototype, 'task', {
-//	get : function() {
-//		if (!this.memory.task) {
-//			return NONE;
-//		}
-//		return this.memory.task;
-//	},
-//	set : function(t) {
-//		this.memory.task = t;
-//	}
-//});
-
-Object.defineProperty(Creep.prototype, 'role', {
-	get : function() {
-		if (!this.memory.role) {
-			return NONE;
-		}
-		return this.memory.role;
-	},
-	set : function(r) {
-		this.memory.role = r;
-	}
-});
+memory_property(Creep.prototype, 'role', NONE);
 
 Creep.prototype.empty = function() {
 	return _.sum(this.carry) == 0;
@@ -97,18 +74,7 @@ Room.prototype.sources = function() {
 	return this.find(FIND_SOURCES);
 };
 
-Object.defineProperty(Room.prototype, 'buildlist', {
-	get : function() {
-		if (!this.memory.buildlist) {
-			this.memory.buildlist = {};
-		}
-		return this.memory.buildlist;
-	},
-	set : function(x) {
-		this.memory.buildlist = x;
-	},
-	writeable : true
-});
+memory_property(Room.prototype, 'buildlist', {});
 
 Room.prototype.add_to_build = function(position, structure) {
 	let index = to_str(position);
@@ -126,17 +92,7 @@ Room.prototype.adjacent_plains = function(pos) {
 	return _.filter(area, {type : 'terrain', terrain: 'plain'});
 };
 
-Object.defineProperty(StructureSpawn.prototype, 'creep_count', {
-	get : function() {
-		if(!this.memory.creep_count) {
-			return 0;
-		}
-		return this.memory.creep_count;
-	},
-	set : function(x) {
-		this.memory.creep_count = x;
-	}
-});
+memory_property(StructureSpawn.prototype, 'creep_count', 0);
 
 StructureSpawn.prototype.spawn = function(role) {
 	let ret = this.spawnCreep(role.parts, role.role + '_' + this.creep_count, {memory : {role : role.role}});
