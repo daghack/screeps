@@ -153,7 +153,6 @@ StructureSpawn.prototype.add_initial_build_orders = function() {
 		});
 		this.memory.road_orders_issued = true;
 	}
-	return OK;
 };
 
 Room.prototype.buildlist_visual = function() {

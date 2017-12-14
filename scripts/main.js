@@ -18,12 +18,18 @@ function clean_memory() {
 }
 
 module.exports.loop = function () {
-	let spawn1 = Game.spawns.Spawn1;
-	spawn1.add_initial_build_orders();
-	spawn1.room.buildlist_visual();
-	let path = spawn1.room.controller.pos.findPathTo(spawn1, {ignoreCreeps : true, ignoreRoads : true});
-	spawn1.room.visual.poly(path, {stroke : 'black'});
 	clean_memory();
+	_.forEach(Game.rooms, room => {
+		room.buildlist_visual();
+		_.forEach(room.buildlist, (build, key) => {
+			if (room.createConstructionSite(build.x, build.y, build.struct) == OK) {
+				delete room.buildlist[key];
+			}
+		});
+	});
+	_.forEach(Game.spawns, spawn => {
+		spawn.add_initial_build_orders();
+	});
 	_.forEach (Game.creeps, creep => {
 		if (creep.spawning) {
 			return;
