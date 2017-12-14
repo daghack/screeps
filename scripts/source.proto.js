@@ -5,6 +5,7 @@ if (!Memory.sources) {
 Object.defineProperty(Source.prototype, 'memory', {
 	writeable : true,
 	get : function() {
+		console.log(this.id);
 		if (!Memory.sources[this.id]) {
 			Memory.sources[this.id] = {};
 		}
