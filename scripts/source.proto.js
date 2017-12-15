@@ -18,9 +18,6 @@ Source.prototype.init = function() {
 };
 
 Source.prototype.assign_worker = function(harvester) {
-	if(harvester.assigned) {
-		return;
-	}
 	let available_slot = _.findIndex(this.slots, 'assigned', NONE);
 	if (available_slot < 0) {
 	//#TODO Do something if slots are filled up?
@@ -28,7 +25,7 @@ Source.prototype.assign_worker = function(harvester) {
 	}
 	this.slots[available_slot].assigned = harvester.name;
 	this.slots[available_slot].requested = false;
-	harvester.assigned = NONE;
+	harvester.assigned = true;
 };
 
 Source.prototype.schedule_harvester = function(manager, slot) {

@@ -127,7 +127,8 @@ StructureSpawn.prototype.tick = function(manager) {
 	if (this.spawning) {
 		let creep = Game.creeps[this.spawning.name];
 		if (creep && !creep.assigned) {
-			let owner = Game.getObjectById(creep.assigned_to); owner.assign_worker(creep);
+			let owner = Game.getObjectById(creep.assigned_to);
+			owner.assign_worker(creep);
 		}
 		return;
 	}
@@ -141,9 +142,6 @@ StructureSpawn.prototype.tick = function(manager) {
 };
 
 StructureSpawn.prototype.assign_worker = function(worker) {
-	if (worker.assigned) {
-		return;
-	}
 	let worker_type = worker.name.split("_")[0];
 	if (worker_type == "HAULER") {
 		this.haulers.names.push(worker.name);
