@@ -147,8 +147,11 @@ StructureSpawn.prototype.tick = function(manager) {
 		return;
 	}
 	let next_spawn = this.spawn_queue[0];
-	if (this.spawnCreep(next_spawn.body, next_spawn.name, next_spawn.opts) == OK) {
+	let err = this.spawnCreep(next_spawn.body, next_spawn.name, next_spawn.opts);
+	if (err == OK) {
 		this.spawn_queue.shift();
+	} else {
+		console.log("SPAWN ERROR: ", err);
 	}
 };
 
@@ -168,21 +171,21 @@ StructureSpawn.prototype.assign_worker = function(worker) {
 };
 
 StructureSpawn.prototype.schedule_hauler = function(manager) {
-	let name = "HAULER_" + _.random(0, Number.MAX_SAFE_INTEGER);
+	let name = _.uniqueId("HAULER_");
 	let body = [CARRY, MOVE];
 	manager.schedule_creep(name, body, {memory : {assigned_to : this.id}}, [CARRY, CARRY, MOVE, MOVE]);
 	this.haulers.number_requested += 1;
 };
 
 StructureSpawn.prototype.schedule_builder = function(manager) {
-	let name = "BUILDER_" + _.random(0, Number.MAX_SAFE_INTEGER);
+	let name = _.uniqueId("BUILDER_");
 	let body = [WORK, CARRY, MOVE, MOVE];
 	manager.schedule_creep(name, body, {memory : {assigned_to : this.id}});
 	this.builders.number_requested += 1;
 };
 
 StructureSpawn.prototype.schedule_upgrader = function(manager) {
-	let name = "UPGRADER_" + _.random(0, Number.MAX_SAFE_INTEGER);
+	let name = _.uniqueId("UPGRADER_");
 	manager.schedule_creep(name, [CARRY, WORK, MOVE, MOVE], {memory : {assigned_to : this.id}});
 	this.upgraders.number_requested += 1;
 };
