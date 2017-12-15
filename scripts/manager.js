@@ -35,7 +35,7 @@ Manager.prototype.tick = function() {
 		console.log("Manager Update");
 	}
 	_.forEach(this.sources, source => {
-		source.tick(manager);
+		source.tick(this);
 	});
 	_.forEach(this.spawners, spawner => {
 		spawner.tick();
