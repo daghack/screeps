@@ -35,6 +35,7 @@ Source.prototype.schedule_harvester = function(manager) {
 };
 
 Source.prototype.tick = function(manager) {
+	console.log("Source " + this.id + " tick");
 	_.forEach(this.slots, slot => {
 		if (slot.assigned && !Game.creeps[slot.assigned]) {
 			delete slot.assigned;

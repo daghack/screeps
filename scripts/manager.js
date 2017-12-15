@@ -34,11 +34,12 @@ Manager.prototype.tick = function() {
 	if (Game.time % this.update_interval == 0) {
 		console.log("Manager Update");
 	}
-	_.forEach(this.sources, source => {
+	_.forEach(this.sources, source_id => {
+		let source = Game.getObjectById(source_id);
 		source.tick(this);
 	});
-	_.forEach(this.spawners, spawner => {
-		spawner.tick();
+	_.forEach(this.spawners, spawner_name => {
+		Game.spawns[spawner_name].tick();
 	});
 };
 
@@ -69,6 +70,7 @@ StructureSpawn.prototype.parts_in_queue = function() {
 };
 
 StructureSpawn.prototype.tick = function() {
+	console.log("Spawner " + this.name + " tick");
 	if (!this.isActive() || this.spawning || this.spawn_queue.length == 0) {
 		return;
 	}
