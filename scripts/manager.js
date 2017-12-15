@@ -19,6 +19,10 @@ Manager.prototype.initialize = function(room) {
 	_.forEach(sources, source => {
 		source.init(this);
 		this.sources.push(source.id);
+		let cpath = source.pos.findPathTo(room.controller, {ignoreCreeps : true, ignoreRoads : true});
+		_.forEach(cpath, pos => {
+			this.schedule_build(room, STRUCTURE_ROAD, pos);
+		});
 	});
 	_.forEach(Game.spawns, spawner => {
 		this.spawners.push(spawner.name);
