@@ -28,7 +28,11 @@ Manager.prototype.initialize = function(room) {
 	});
 	sources[0].schedule_harvester(this);
 	_.forEach(Game.spawns, spawner => {
+		spawner.haulers = {number_requested : 0, names : []};
+		spawner.builders = {number_requested : 0, names : []};
+		spawner.upgraders = {number_requested : 0, names : []};
 		spawner.schedule_hauler(this);
+		spawner.schedule_builder(this);
 		_.forEach(sources, source => {
 			let spath = spawner.pos.findPathTo(source, {ignoreCreeps : true, ignoreRoads : true});
 			_.forEach(spath, pos => {
@@ -98,7 +102,9 @@ Manager.prototype.schedule_creep = function(name, body, opts) {
 };
 
 memory_property(StructureSpawn.prototype, 'spawn_queue', Array, true);
-memory_property(StructureSpawn.prototype, 'haulers', Array, true);
+memory_property(StructureSpawn.prototype, 'haulers', Object, true);
+memory_property(StructureSpawn.prototype, 'upgraders', Object, true);
+memory_property(StructureSpawn.prototype, 'builders', Object, true);
 
 StructureSpawn.prototype.add_to_queue = function(name, body, opts) {
 	this.spawn_queue.push({name : name, body : body, opts : opts});
@@ -112,32 +118,28 @@ StructureSpawn.prototype.parts_in_queue = function() {
 StructureSpawn.prototype.tick = function() {
 	console.log("Spawner " + this.name + " Tick");
 	let toremove = [];
-	_.forEach(this.haulers, hauler_name => {
+	_.forEach(this.haulers.names, hauler_name => {
 		let creep = Game.creeps[hauler_name];
 		if (creep) {
-			if (creep.full()) {
-				creep.task = 'return';
-			} else if (creep.empty()) {
-				creep.task = 'gather';
-			}
-			if (creep.task == 'return') {
-				if (creep.transfer(this, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-					creep.moveTo(this);
-				}
-			} else if (creep.task == 'gather') {
-				let targ = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
-				if (targ) {
-					if (creep.pickup(targ) == ERR_NOT_IN_RANGE) {
-						creep.moveTo(targ);
-					}
-				}
-			}
+			this.tick_hauler(creep);
 		} else {
 			toremove.push(hauler_name);
 		}
 	});
 	_.forEach(toremove, hauler_name => {
 		_.remove(this.haulers, val => val == hauler_name);
+	});
+	toremove = [];
+	_.forEach(this.builders.names, builder_name => {
+		let creep = Game.creeps[builder_name];
+		if (creep) {
+			this.tick_builder(creep);
+		} else {
+			toremove.push(builder_name);
+		}
+	});
+	_.forEach(toremove, builder_name => {
+		_.remove(this.builders, val => val == builder_name);
 	});
 	if (this.spawning) {
 		let creep = Game.creeps[this.spawning.name];
@@ -155,17 +157,77 @@ StructureSpawn.prototype.tick = function() {
 	}
 };
 
-StructureSpawn.prototype.assign_worker = function(hauler) {
-	if (hauler.assigned) {
+StructureSpawn.prototype.assign_worker = function(worker) {
+	if (worker.assigned) {
 		return;
 	}
-	this.haulers.push(hauler.name);
-	hauler.assigned = true;
+	let worker_type = worker.name.split("_")[0];
+	if (worker_type == "HAULER") {
+		this.haulers.names.push(worker.name);
+	} else if (worker_type == "BUILDER") {
+		this.builders.names.push(worker.name);
+	} else if (worker_type == "UPGRADER") {
+		this.upgraders.names.push(worker.name);
+	}
+	worker.assigned = true;
 };
 
 StructureSpawn.prototype.schedule_hauler = function(manager) {
 	let name = "HAULER" + _.random(0, Number.MAX_SAFE_INTEGER);
 	manager.schedule_creep(name, [CARRY, CARRY, MOVE], {memory : {assigned_to : this.id}});
+	this.haulers.number_requested += 1;
+};
+
+StructureSpawn.prototype.schedule_builder = function(manager) {
+	let name = "BUILDER" + _.random(0, Number.MAX_SAFE_INTEGER);
+	manager.schedule_creep(name, [CARRY, WORK, MOVE, MOVE], {memory : {assigned_to : this.id}});
+	this.builders.number_requested += 1;
+};
+
+StructureSpawn.prototype.schedule_upgrader = function(manager) {
+	let name = "UPGRADER" + _.random(0, Number.MAX_SAFE_INTEGER);
+	manager.schedule_creep(name, [CARRY, WORK, MOVE, MOVE], {memory : {assigned_to : this.id}});
+	this.upgraders.number_requested += 1;
+};
+
+StructureSpawn.prototype.tick_hauler = function(creep) {
+	if (creep.full()) {
+		creep.task = 'return';
+	} else if (creep.empty()) {
+		creep.task = 'gather';
+	}
+	if (creep.task == 'return') {
+		if (creep.transfer(this, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+			creep.moveTo(this);
+		}
+	} else if (creep.task == 'gather') {
+		let targ = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
+		if (targ) {
+			if (creep.pickup(targ) == ERR_NOT_IN_RANGE) {
+				creep.moveTo(targ);
+			}
+		}
+	}
+};
+
+StructureSpawn.prototype.tick_builder = function(creep) {
+	if (creep.full()) {
+		creep.task = 'build';
+	} else if (creep.empty()) {
+		creep.task = 'gather';
+	}
+	if (creep.task == 'return') {
+		if (creep.transfer(this, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+			creep.moveTo(this);
+		}
+	} else if (creep.task == 'build') {
+		let targ = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
+		if (targ) {
+			if (creep.build(targ) == ERR_NOT_IN_RANGE) {
+				creep.moveTo(targ);
+			}
+		}
+	}
 };
 
 module.exports = {
