@@ -1,6 +1,5 @@
 add_memory(Source.prototype, 'sources', source => source.id);
 memory_property(Source.prototype, 'initialized', false);
-memory_property(Source.prototype, 'assigned_harvesters', Object, true);
 memory_property(Source.prototype, 'slots', Array, true);
 
 Source.prototype.init = function() {
@@ -16,16 +15,11 @@ Source.prototype.init = function() {
 	this.initialized = true;
 };
 
-Source.prototype.harvesters_needed = function() {
-	return this.slots.length - _.size(this.assigned_harvesters);
-};
-
 Source.prototype.assign_worker = function(harvester) {
 	console.log(harvester.name + " being assigned.");
 	if(harvester.assigned) {
 		return;
 	}
-	this.assigned_harvesters[harvester.name] = harvester;
 	let available_slot = _.findIndex(this.slots, 'assigned', NONE);
 	if (available_slot < 0) {
 		console.log("NO SLOTS AVAILABLE");
@@ -51,12 +45,12 @@ Source.prototype.tick = function(manager) {
 			slot.assigned = NONE;
 		}
 		if (slot.assigned != NONE) {
-			let harvester = this.assigned_harvesters[slot.assigned];
+			let harvester = Game.creeps[slot.assigned];
 			if (harvester.spawning) {
 				return;
 			}
 			if (harvester.harvest(this) == ERR_NOT_IN_RANGE) {
-				this.moveTo(this, {visualizePathStyle:{}});
+				harvester.moveTo(this, {visualizePathStyle:{}});
 			}
 		} else if (!slot.requested) {
 		}
