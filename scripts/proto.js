@@ -114,13 +114,15 @@ Room.prototype.add_to_build = function(position, structure) {
 	}
 };
 
-Room.prototype.adjacent_plains = function(pos) {
+Room.prototype.adjacent_nonwall = function(pos) {
 	let top_b = Math.max(0, pos.y-1);
 	let bottom_b = Math.min(49, pos.y+1);
 	let left_b = Math.max(0, pos.x-1);
 	let right_b = Math.min(49, pos.x+1);
 	let area = this.lookAtArea(top_b, left_b, bottom_b, right_b, true);
-	return _.filter(area, {type : 'terrain', terrain: 'plain'});
+	return _.filter(area, obj => {
+		return obj.type == 'terrain' && obj.terrain != 'wall';
+	});
 };
 
 //memory_property(StructureSpawn.prototype, 'creep_count', 0);

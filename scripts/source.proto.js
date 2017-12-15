@@ -7,7 +7,7 @@ Source.prototype.init = function() {
 	if (this.initialized) {
 		return;
 	}
-	let slots = this.room.adjacent_plains(this.pos);
+	let slots = this.room.adjacent_nonwall(this.pos);
 	_.forEach(slots, slot => {
 		let roomPos = new RoomPosition(slot.x, slot.y, this.room.name);
 		roomPos.assigned = NONE;
