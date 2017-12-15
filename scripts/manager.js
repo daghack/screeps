@@ -12,7 +12,7 @@ memory_property(Manager.prototype, 'spawners', Array, true);
 Manager.prototype.initialize = function(room) {
 	let sources = room.find(FIND_SOURCES);
 	_.forEach(sources, source => {
-		source.init();
+		source.init(this);
 	});
 };
 
