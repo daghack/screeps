@@ -35,7 +35,6 @@ Manager.prototype.tick = function() {
 	if (Game.time % this.update_interval == 0) {
 		console.log("Manager Update");
 	}
-	let creep = spawn.spawning;
 	_.forEach(Game.creeps, creep => {
 		if (!creep.assigned) {
 			console.log("Assigning Creep");
