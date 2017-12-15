@@ -51,7 +51,7 @@ Manager.prototype.initialize = function(room) {
 };
 
 Manager.prototype.ticks_alive = function() {
-	return Game.now - this.start_tick;
+	return Game.time - this.start_tick;
 };
 
 Manager.prototype.schedule_build = function(room, struct, poslike) {
