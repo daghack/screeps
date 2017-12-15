@@ -24,6 +24,7 @@ module.exports.loop = function () {
 	let manager = new m.Manager('main manager', 15);
 	manager.initialize(Game.spawns.Spawn1.room);
 	manager.tick();
+	manager.schedule_creep("testcreep", [WORK, CARRY, MOVE], {});
 //	_.forEach(Game.rooms, room => {
 //		room.buildlist_visual();
 //		_.forEach(room.buildlist, (build, key) => {
