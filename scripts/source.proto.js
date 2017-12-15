@@ -58,9 +58,11 @@ Source.prototype.tick = function(manager) {
 			if (harvester.spawning) {
 				return;
 			}
-			if (harvester.harvest(this) == ERR_NOT_IN_RANGE) {
+			if (harvester.pos.x != slot.x || harvester.pos.y != slot.y) {
 				let pos = new RoomPosition(slot.x, slot.y, slot.roomName);
 				harvester.moveTo(pos, {visualizePathStyle:{}});
+			} else {
+				harvester.harvest(this);
 			}
 		} else if (slot.assigned == NONE && !slot.requested) {
 			this.schedule_harvester(manager, slot);
