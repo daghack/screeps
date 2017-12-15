@@ -31,7 +31,7 @@ Source.prototype.assign_worker = function(harvester) {
 Source.prototype.schedule_harvester = function(manager, slot) {
 	console.log("SOURCE " + this.id + " SCHEDULING HARVESTER");
 	let name = "HARVESTER_" + _.random(0, Number.MAX_SAFE_INTEGER);
-	manager.schedule_creep(name, [WORK, MOVE], {memory : {assigned_to : this.id}});
+	manager.schedule_creep(name, [WORK, MOVE], {memory : {assigned_to : this.id}}, [WORK, WORK, MOVE]);
 	if (slot) {
 		slot.requested = true;
 	} else {
