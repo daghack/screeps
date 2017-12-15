@@ -10,6 +10,7 @@ Source.prototype.init = function() {
 	_.forEach(slots, slot => {
 		let roomPos = new RoomPosition(slot.x, slot.y, this.room.name);
 		roomPos.assigned = NONE;
+		roomPos.request = false;
 		this.slots.push(roomPos);
 	});
 	this.initialized = true;
@@ -49,6 +50,8 @@ Source.prototype.tick = function(manager) {
 				harvester.moveTo(pos, {visualizePathStyle:{}});
 			}
 		} else if (!slot.requested) {
+			this.schedule_harvester(manager);
+			slot.request = true;
 		}
 	});
 };

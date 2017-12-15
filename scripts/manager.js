@@ -90,7 +90,7 @@ StructureSpawn.prototype.tick = function() {
 					creep.moveTo(this);
 				}
 			} else if (creep.task == 'gather') {
-				let targ = creep.pos.findClosestByPath(FIND_DROPPED_ENERGY);
+				let targ = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
 				if (targ) {
 					if (creep.pickup(targ) == ERR_NOT_IN_RANGE) {
 						creep.moveTo(targ);
