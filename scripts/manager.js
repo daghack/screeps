@@ -226,6 +226,10 @@ StructureSpawn.prototype.tick_builder = function(creep) {
 				creep.moveTo(targ);
 			}
 		}
+		let targ2 = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
+		if (targ2) {
+			creep.pickup(targ2);
+		}
 	} else if (creep.task == 'gather') {
 		let targ = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
 		if (targ) {
