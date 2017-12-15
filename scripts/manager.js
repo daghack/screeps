@@ -35,19 +35,18 @@ Manager.prototype.tick = function() {
 	if (Game.time % this.update_interval == 0) {
 		console.log("Manager Update");
 	}
-	_.forEach(Game.creeps, creep => {
-		if (!creep.assigned) {
-			console.log("Assigning Creep");
-			let owner = Game.getObjectById(creep.assigned_to);
-			owner.assign_worker(creep);
-		}
-	});
 	_.forEach(this.sources, source_id => {
 		let source = Game.getObjectById(source_id);
 		source.tick(this);
 	});
 	_.forEach(this.spawners, spawner_name => {
 		let spawn = Game.spawns[spawner_name];
+		let creep = Game.creeps[spawn.spawning.name];
+		if (creep && !creep.assigned) {
+			console.log("Creep about to be assigned to object " + creep.assigned_to);
+			let owner = Game.getObjectById(creep.assigned_to);
+			owner.assign_worker(creep);
+		}
 		spawn.tick();
 	});
 };
