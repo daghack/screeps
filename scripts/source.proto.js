@@ -3,7 +3,7 @@ memory_property(Source.prototype, 'initialized', false);
 memory_property(Source.prototype, 'assigned_harvesters', Object, true);
 memory_property(Source.prototype, 'slots', Array, true);
 
-Source.prototype.init = function(manager) {
+Source.prototype.init = function() {
 	if (this.initialized) {
 		return;
 	}
@@ -13,10 +13,6 @@ Source.prototype.init = function(manager) {
 		roomPos.assigned = NONE;
 		this.slots.push(roomPos);
 	});
-	if (manager) {
-		this.schedule_harvester(manager);
-		//#TODO Move road registering here.
-	}
 	this.initialized = true;
 };
 
