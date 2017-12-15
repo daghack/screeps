@@ -28,6 +28,9 @@ Source.prototype.assign_worker = function(harvester) {
 	this.assigned_harvesters[harvester.name] = harvester;
 	let available_slot = _.findIndex(this.slots, 'assigned', NONE);
 	if (available_slot < 0) {
+		console.log("NO SLOTS AVAILABLE");
+		console.log(available_slot);
+		console.log(JSON.stringify(this.slots));
 	//#TODO Do something if slots are filled up?
 		return;
 	}
