@@ -30,14 +30,14 @@ global.add_memory = function(obj, tag, unique_id) {
 	}
 	Object.defineProperty(obj, 'memory', {
 		get : function() {
-			let obj_id = unique_id(obj);
+			let obj_id = unique_id(this);
 			if (!Memory[tag][obj_id]) {
 				Memory[tag][obj_id] = {};
 			}
 			return Memory[tag][obj_id];
 		},
 		set : function(x) {
-			Memory[tag][unique_id(obj)] = x;
+			Memory[tag][unique_id(this)] = x;
 		}
 	});
 };
