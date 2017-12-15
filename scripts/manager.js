@@ -4,20 +4,30 @@ var Manager = function Manager(name, update_interval) {
 };
 add_memory(Manager.prototype, 'managers', manager => manager.name);
 //memory_property(Manager.prototype, 'rooms', Object, true);
+memory_property(Manager.prototype, 'initialized', false);
 memory_property(Manager.prototype, 'buildset', Object, true);
 memory_property(Manager.prototype, 'sources', Array, true);
 memory_property(Manager.prototype, 'creeps', Object, true);
 memory_property(Manager.prototype, 'spawners', Array, true);
 
 Manager.prototype.initialize = function(room) {
+	if (this.initialized) {
+		return;
+	}
+	console.log("Initializing Manager");
+	console.log(JSON.stringify(room));
 	let sources = room.find(FIND_SOURCES);
+	console.log(sources.length);
 	_.forEach(sources, source => {
 		source.init(this);
+		console.log("Adding source " + source.id + " to manager.");
 		this.sources.push(source.id);
 	});
 	_.forEach(Game.spawns, spawner => {
+		console.log("Adding spawner " + spawner.name + " to manager.");
 		this.spawners.push(spawner.name);
 	});
+	this.initialized = true;
 };
 
 Manager.prototype.tick = function() {
@@ -35,6 +45,7 @@ Manager.prototype.tick = function() {
 Manager.prototype.schedule_creep = function(name, body, opts) {
 	let minscore = 1000000;
 	let selected_spawn = "";
+	console.log(JSON.stringify(this.spawners));
 	_.forEach(this.spawners, function(spawner_name) {
 		let piq = Game.spawns[spawner_name].parts_in_queue();
 		if (piq < minscore) {
@@ -42,6 +53,7 @@ Manager.prototype.schedule_creep = function(name, body, opts) {
 			selected_spawn = spawner_name;
 		}
 	});
+	console.log("Adding to " + selected_spawn + "'s queue.");
 	Game.spawns[selected_spawn].add_to_queue(name, body, opts);
 };
 
