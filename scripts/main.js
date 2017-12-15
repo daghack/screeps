@@ -22,6 +22,9 @@ function clean_memory() {
 module.exports.loop = function () {
 	clean_memory();
 	let manager = new m.Manager('main manager', 15);
-	manager.initialize(Game.spawns.Spawn1.room);
-	manager.tick();
+	_.forEach(Game.spawns, spawn => {
+		manager.initialize(spawn.room);
+		manager.tick();
+		return;
+	});
 };
