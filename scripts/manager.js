@@ -15,16 +15,12 @@ Manager.prototype.initialize = function(room) {
 		return;
 	}
 	console.log("Initializing Manager");
-	console.log(JSON.stringify(room));
 	let sources = room.find(FIND_SOURCES);
-	console.log(sources.length);
 	_.forEach(sources, source => {
 		source.init(this);
-		console.log("Adding source " + source.id + " to manager.");
 		this.sources.push(source.id);
 	});
 	_.forEach(Game.spawns, spawner => {
-		console.log("Adding spawner " + spawner.name + " to manager.");
 		this.spawners.push(spawner.name);
 	});
 	sources[0].schedule_harvester(this);
@@ -32,6 +28,7 @@ Manager.prototype.initialize = function(room) {
 };
 
 Manager.prototype.tick = function() {
+	console.log("Manager Tick");
 	if (Game.time % this.update_interval == 0) {
 		console.log("Manager Update");
 	}
@@ -48,7 +45,6 @@ Manager.prototype.tick = function() {
 Manager.prototype.schedule_creep = function(name, body, opts) {
 	let minscore = 1000000;
 	let selected_spawn = "";
-	console.log(JSON.stringify(this.spawners));
 	_.forEach(this.spawners, function(spawner_name) {
 		let piq = Game.spawns[spawner_name].parts_in_queue();
 		if (piq < minscore) {
@@ -56,7 +52,6 @@ Manager.prototype.schedule_creep = function(name, body, opts) {
 			selected_spawn = spawner_name;
 		}
 	});
-	console.log("Adding to " + selected_spawn + "'s queue.");
 	if (selected_spawn == "") {
 		return -1;
 	}
@@ -76,12 +71,10 @@ StructureSpawn.prototype.parts_in_queue = function() {
 };
 
 StructureSpawn.prototype.tick = function() {
-	console.log("Spawner " + this.name + " tick");
+	console.log("Spawner " + this.name + " Tick");
 	if (this.spawning) {
 		let creep = Game.creeps[this.spawning.name];
 		if (creep && !creep.assigned) {
-			console.log("Creep about to be assigned to object " + creep.assigned_to);
-			console.log(JSON.stringify(creep.memory));
 			let owner = Game.getObjectById(creep.assigned_to);
 			owner.assign_worker(creep);
 		}

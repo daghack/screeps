@@ -16,15 +16,11 @@ Source.prototype.init = function() {
 };
 
 Source.prototype.assign_worker = function(harvester) {
-	console.log(harvester.name + " being assigned.");
 	if(harvester.assigned) {
 		return;
 	}
 	let available_slot = _.findIndex(this.slots, 'assigned', NONE);
 	if (available_slot < 0) {
-		console.log("NO SLOTS AVAILABLE");
-		console.log(available_slot);
-		console.log(JSON.stringify(this.slots));
 	//#TODO Do something if slots are filled up?
 		return;
 	}
@@ -34,12 +30,11 @@ Source.prototype.assign_worker = function(harvester) {
 
 Source.prototype.schedule_harvester = function(manager) {
 	let name = "HARVESTER_" + _.random(0, Number.MAX_SAFE_INTEGER);
-	manager.schedule_creep(name, [WORK, WORK, MOVE], {memory : {assigned_to : this.id}});
+	manager.schedule_creep(name, [WORK, WORK, MOVE, MOVE], {memory : {assigned_to : this.id}});
 };
 
 Source.prototype.tick = function(manager) {
-	console.log("Source " + this.id + " tick");
-	console.log(JSON.stringify(this.memory));
+	console.log("Source " + this.id + " Tick");
 	_.forEach(this.slots, slot => {
 		if (slot.assigned && !Game.creeps[slot.assigned]) {
 			slot.assigned = NONE;
