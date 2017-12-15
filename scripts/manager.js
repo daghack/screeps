@@ -60,6 +60,7 @@ Manager.prototype.schedule_creep = function(name, body, opts) {
 };
 
 memory_property(StructureSpawn.prototype, 'spawn_queue', Array, true);
+memory_property(StructureSpawn.prototype, 'haulers', Array, true);
 
 StructureSpawn.prototype.add_to_queue = function(name, body, opts) {
 	this.spawn_queue.push({name : name, body : body, opts : opts});
@@ -72,11 +73,38 @@ StructureSpawn.prototype.parts_in_queue = function() {
 
 StructureSpawn.prototype.tick = function() {
 	console.log("Spawner " + this.name + " Tick");
+	let toremove = [];
+	_.forEach(this.haulers, hauler_name => {
+		let creep = Game.creeps[hauler_name];
+		if (creep) {
+			if (creep.full()) {
+				creep.task = 'return';
+			} else if (creep.empty()) {
+				creep.task = 'gather';
+			}
+			if (creep.task == 'return') {
+				if (creep.transfer(this, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+					creep.moveTo(this);
+				}
+			} else if (creep.task == 'gather') {
+				let targ = creep.pos.findClosestByPath(FIND_DROPPED_ENERGY);
+				if (targ) {
+					if (creep.pickup(targ) == ERR_NOT_IN_RANGE) {
+						creep.moveTo(targ);
+					}
+				}
+			}
+		} else {
+			toremove.push(hauler_name);
+		}
+	});
+	_.forEach(toremove, hauler_name => {
+		_.remove(this.haulers, val => val == hauler_name);
+	});
 	if (this.spawning) {
 		let creep = Game.creeps[this.spawning.name];
 		if (creep && !creep.assigned) {
-			let owner = Game.getObjectById(creep.assigned_to);
-			owner.assign_worker(creep);
+			let owner = Game.getObjectById(creep.assigned_to); owner.assign_worker(creep);
 		}
 		return;
 	}
@@ -87,6 +115,19 @@ StructureSpawn.prototype.tick = function() {
 	if (this.spawnCreep(next_spawn.body, next_spawn.name, next_spawn.opts) == OK) {
 		this.spawn_queue.shift();
 	}
+};
+
+StructureSpawn.prototype.assign_worker = function(hauler) {
+	if (hauler.assigned) {
+		return;
+	}
+	this.haulers.push(hauler.name);
+	hauler.assigned = true;
+};
+
+StructureSpawn.prototype.schedule_hauler = function(manager) {
+	let name = "HAULER" + _.random(0, Number.MAX_SAFE_INTEGER);
+	manager.schedule_creep(name, [CARRY, MOVE], {memory : {assigned_to : this.id}});
 };
 
 module.exports = {

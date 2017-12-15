@@ -68,6 +68,7 @@ Creep.prototype.spawnfillRoom = function(room) {
 
 memory_property(Creep.prototype, 'assigned', false);
 memory_property(Creep.prototype, 'assigned_to', NONE);
+memory_property(Creep.prototype, 'task', NONE);
 
 Creep.prototype.empty = function() {
 	return _.sum(this.carry) == 0;
