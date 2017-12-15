@@ -40,7 +40,6 @@ Source.prototype.schedule_harvester = function(manager, slot) {
 	} else {
 		let available_slot = _.findIndex(this.slots, {'assigned':NONE, 'requested':false});
 		if (available_slot < 0) {
-			console.log("AAAAAAH D:");
 		//#TODO Do something if slots are filled up?
 			return;
 		}
@@ -51,7 +50,6 @@ Source.prototype.schedule_harvester = function(manager, slot) {
 Source.prototype.tick = function(manager) {
 	console.log("Source " + this.id + " Tick");
 	_.forEach(this.slots, slot => {
-		console.log(JSON.stringify(slot));
 		if (slot.assigned != NONE && !Game.creeps[slot.assigned]) {
 			slot.assigned = NONE;
 		}
@@ -67,6 +65,5 @@ Source.prototype.tick = function(manager) {
 		} else if (slot.assigned == NONE && !slot.requested) {
 			this.schedule_harvester(manager, slot);
 		}
-		console.log(JSON.stringify(slot));
 	});
 };
