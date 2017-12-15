@@ -66,9 +66,8 @@ Creep.prototype.spawnfillRoom = function(room) {
 	}
 };
 
-memory_property(Creep.prototype, 'task', NONE);
-memory_property(Creep.prototype, 'self_managed', false);
-memory_property(Creep.prototype, 'role', NONE);
+memory_property(Creep.prototype, 'assigned', false);
+memory_property(Creep.prototype, 'assigned_to', NONE);
 
 Creep.prototype.empty = function() {
 	return _.sum(this.carry) == 0;

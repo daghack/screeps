@@ -39,7 +39,13 @@ Manager.prototype.tick = function() {
 		source.tick(this);
 	});
 	_.forEach(this.spawners, spawner_name => {
-		Game.spawns[spawner_name].tick();
+		let spawn = Game.spawns[spawner_name];
+		let creep = spawn.spawning;
+		if (creep && !creep.assigned) {
+			let owner = Game.getObjectById(creep.assigned_to);
+			owner.assigned_worker(creep);
+		}
+		spawn.tick();
 	});
 };
 

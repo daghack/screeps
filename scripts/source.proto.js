@@ -20,8 +20,9 @@ Source.prototype.harvesters_needed = function() {
 	return this.slots.length - _.size(this.assigned_harvesters);
 };
 
-Source.prototype.assign_harvester = function(harvester) {
+Source.prototype.assign_worker = function(harvester) {
 	this.assigned_harvesters[harvester.name] = harvester;
+	harvester.assigned = true;
 	let available_slot = _.findIndex(this.slots, 'assigned', NONE);
 	if (available_slot < 0) {
 	//#TODO Do something if slots are filled up?
@@ -31,7 +32,7 @@ Source.prototype.assign_harvester = function(harvester) {
 };
 
 Source.prototype.schedule_harvester = function(manager) {
-	manager.schedule_creep([WORK, WORK, MOVE], {self_managed : false});
+	manager.schedule_creep([WORK, WORK, MOVE], {assigned_to : this.id});
 };
 
 Source.prototype.tick = function(manager) {
