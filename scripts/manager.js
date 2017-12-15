@@ -32,6 +32,7 @@ Manager.prototype.initialize = function(room) {
 		spawner.builders = {number_requested : 0, names : []};
 		spawner.upgraders = {number_requested : 0, names : []};
 		spawner.schedule_hauler(this);
+		spawner.schedule_upgrader(this);
 		spawner.schedule_builder(this);
 		_.forEach(sources, source => {
 			let spath = spawner.pos.findPathTo(source, {ignoreCreeps : true, ignoreRoads : true});
@@ -239,6 +240,27 @@ StructureSpawn.prototype.tick_builder = function(creep) {
 };
 
 StructureSpawn.prototype.tick_upgrader = function(creep) {
+	if (creep.full()) {
+		creep.task = 'upgrade';
+	} else if (creep.empty()) {
+		creep.task = 'gather';
+	}
+	if (creep.task == 'upgrade') {
+		if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
+			creep.moveTo(creep.room.controller);
+		}
+	} else if (creep.task == 'gather') {
+		let targ = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
+		if (targ) {
+			if (creep.pickup(targ) == ERR_NOT_IN_RANGE) {
+				creep.moveTo(targ);
+			}
+		}
+		let targ2 = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
+		if (targ2) {
+			creep.build(targ2);
+		}
+	}
 };
 
 StructureSpawn.prototype.tick_creep_set = function(manager, set, tick_func_key, count, schedule_func_key) {
