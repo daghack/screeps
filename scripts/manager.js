@@ -120,7 +120,7 @@ StructureSpawn.prototype.tick = function(manager) {
 	console.log("Spawner " + this.name + " Tick");
 	this.tick_creep_set(manager, this.haulers, 'tick_hauler', 1, 'schedule_hauler');
 	this.tick_creep_set(manager, this.builders, 'tick_builder', 2, 'schedule_builder');
-	this.tick_creep_set(manager, this.upgraders, 'tick_upgrader', 0, 'schedule_upgrader');
+	this.tick_creep_set(manager, this.upgraders, 'tick_upgrader', 2, 'schedule_upgrader');
 	if (this.spawning) {
 		let creep = Game.creeps[this.spawning.name];
 		if (creep && !creep.assigned) {
