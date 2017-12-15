@@ -13,6 +13,10 @@ Manager.prototype.initialize = function(room) {
 	let sources = room.find(FIND_SOURCES);
 	_.forEach(sources, source => {
 		source.init(this);
+		this.sources.push(source.id);
+	});
+	_.forEach(Game.spawns, spawner => {
+		this.spawners.push(spawner.name);
 	});
 };
 
