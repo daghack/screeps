@@ -23,11 +23,11 @@ Manager.prototype.initialize = function(room) {
 		console.log("Adding source " + source.id + " to manager.");
 		this.sources.push(source.id);
 	});
-	sources[0].schedule_harvester(this);
 	_.forEach(Game.spawns, spawner => {
 		console.log("Adding spawner " + spawner.name + " to manager.");
 		this.spawners.push(spawner.name);
 	});
+	sources[0].schedule_harvester(this);
 	this.initialized = true;
 };
 
@@ -62,7 +62,11 @@ Manager.prototype.schedule_creep = function(name, body, opts) {
 		}
 	});
 	console.log("Adding to " + selected_spawn + "'s queue.");
+	if (selected_spawn == "") {
+		return -1;
+	}
 	Game.spawns[selected_spawn].add_to_queue(name, body, opts);
+	return 0;
 };
 
 memory_property(StructureSpawn.prototype, 'spawn_queue', Array, true);
