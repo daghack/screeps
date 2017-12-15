@@ -3,6 +3,7 @@ memory_property(Source.prototype, 'initialized', false);
 memory_property(Source.prototype, 'slots', Array, true);
 
 Source.prototype.init = function() {
+	console.log("Initializing Source");
 	if (this.initialized) {
 		return;
 	}
@@ -30,15 +31,28 @@ Source.prototype.assign_worker = function(harvester) {
 	harvester.assigned = NONE;
 };
 
-Source.prototype.schedule_harvester = function(manager) {
+Source.prototype.schedule_harvester = function(manager, slot) {
+	console.log("SOURCE " + this.id + " SCHEDULING HARVESTER");
 	let name = "HARVESTER_" + _.random(0, Number.MAX_SAFE_INTEGER);
 	manager.schedule_creep(name, [WORK, MOVE], {memory : {assigned_to : this.id}});
+	if (slot) {
+		slot.requested = true;
+	} else {
+		let available_slot = _.findIndex(this.slots, {'assigned':NONE, 'requested':false});
+		if (available_slot < 0) {
+			console.log("AAAAAAH D:");
+		//#TODO Do something if slots are filled up?
+			return;
+		}
+		this.slots[available_slot].requested = true;
+	}
 };
 
 Source.prototype.tick = function(manager) {
 	console.log("Source " + this.id + " Tick");
 	_.forEach(this.slots, slot => {
-		if (slot.assigned && !Game.creeps[slot.assigned]) {
+		console.log(JSON.stringify(slot));
+		if (slot.assigned != NONE && !Game.creeps[slot.assigned]) {
 			slot.assigned = NONE;
 		}
 		if (slot.assigned != NONE) {
@@ -51,8 +65,8 @@ Source.prototype.tick = function(manager) {
 				harvester.moveTo(pos, {visualizePathStyle:{}});
 			}
 		} else if (slot.assigned == NONE && !slot.requested) {
-			this.schedule_harvester(manager);
-			slot.requested = true;
+			this.schedule_harvester(manager, slot);
 		}
+		console.log(JSON.stringify(slot));
 	});
 };
