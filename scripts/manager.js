@@ -118,18 +118,8 @@ StructureSpawn.prototype.parts_in_queue = function() {
 StructureSpawn.prototype.tick = function(manager) {
 	console.log("Spawner " + this.name + " Tick");
 	this.tick_creep_set(manager, this.haulers, this.tick_hauler, 1, this.schedule_hauler);
-	let toremove = [];
-	_.forEach(this.builders.names, builder_name => {
-		let creep = Game.creeps[builder_name];
-		if (creep) {
-			this.tick_builder(creep);
-		} else {
-			toremove.push(builder_name);
-		}
-	});
-	_.forEach(toremove, builder_name => {
-		_.remove(this.builders, val => val == builder_name);
-	});
+	this.tick_creep_set(manager, this.builders, this.tick_builder, 2, this.schedule_builder);
+	this.tick_creep_set(manager, this.upgraders, this.tick_upgrader, 0, this.schedule_upgrader);
 	if (this.spawning) {
 		let creep = Game.creeps[this.spawning.name];
 		if (creep && !creep.assigned) {
@@ -166,13 +156,15 @@ StructureSpawn.prototype.assign_worker = function(worker) {
 
 StructureSpawn.prototype.schedule_hauler = function(manager) {
 	let name = "HAULER_" + _.random(0, Number.MAX_SAFE_INTEGER);
-	manager.schedule_creep(name, [CARRY, MOVE], {memory : {assigned_to : this.id}});
+	let body = [[CARRY, CARRY, MOVE, MOVE], [WORK, CARRY]][_.random(0, 1)];
+	manager.schedule_creep(name, body, {memory : {assigned_to : this.id}});
 	this.haulers.number_requested += 1;
 };
 
 StructureSpawn.prototype.schedule_builder = function(manager) {
 	let name = "BUILDER_" + _.random(0, Number.MAX_SAFE_INTEGER);
-	manager.schedule_creep(name, [CARRY, WORK, MOVE, MOVE], {memory : {assigned_to : this.id}});
+	let body = [[WORK, WORK, CARRY, MOVE], [WORK, CARRY, MOVE, MOVE]][_.random(0, 1)];
+	manager.schedule_creep(name, body, {memory : {assigned_to : this.id}});
 	this.builders.number_requested += 1;
 };
 
@@ -183,6 +175,9 @@ StructureSpawn.prototype.schedule_upgrader = function(manager) {
 };
 
 StructureSpawn.prototype.tick_hauler = function(creep) {
+	if (Game.time % 50 == 0) {
+		creep.target = NONE;
+	}
 	if (creep.full()) {
 		creep.task = 'return';
 	} else if (creep.empty()) {
@@ -237,6 +232,9 @@ StructureSpawn.prototype.tick_builder = function(creep) {
 			creep.build(targ2);
 		}
 	}
+};
+
+StructureSpawn.prototype.tick_upgrader = function(creep) {
 };
 
 StructureSpawn.prototype.tick_creep_set = function(manager, set, tick_func, count, schedule_func) {
