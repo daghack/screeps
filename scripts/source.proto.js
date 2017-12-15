@@ -49,7 +49,7 @@ Source.prototype.tick = function(manager) {
 				let pos = new RoomPosition(slot.x, slot.y, slot.roomName);
 				harvester.moveTo(pos, {visualizePathStyle:{}});
 			}
-		} else if (!slot.requested) {
+		} else if (slot.assigned == NONE && !slot.requested) {
 			this.schedule_harvester(manager);
 			slot.request = true;
 		}
