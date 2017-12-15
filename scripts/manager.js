@@ -26,6 +26,7 @@ Manager.prototype.initialize = function(room) {
 	_.forEach(Game.spawns, spawner => {
 		console.log("Adding spawner " + spawner.name + " to manager.");
 		this.spawners.push(spawner.name);
+		spawner.schedule_harvester(this);
 	});
 	this.initialized = true;
 };
