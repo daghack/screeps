@@ -39,7 +39,7 @@ global.add_memory = function(obj, tag, unique_id) {
 		set : function(x) {
 			Memory[tag][unique_id(obj)] = x;
 		}
-	})
+	});
 };
 
 function to_str(pos) {
