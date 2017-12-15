@@ -157,14 +157,14 @@ StructureSpawn.prototype.assign_worker = function(worker) {
 
 StructureSpawn.prototype.schedule_hauler = function(manager) {
 	let name = "HAULER_" + _.random(0, Number.MAX_SAFE_INTEGER);
-	let body = [[CARRY, CARRY, MOVE, MOVE], [MOVE, CARRY]][_.random(0, 1)];
+	let body = [CARRY, MOVE]; //[[CARRY, CARRY, MOVE, MOVE], [MOVE, CARRY]][_.random(0, 1)];
 	manager.schedule_creep(name, body, {memory : {assigned_to : this.id}});
 	this.haulers.number_requested += 1;
 };
 
 StructureSpawn.prototype.schedule_builder = function(manager) {
 	let name = "BUILDER_" + _.random(0, Number.MAX_SAFE_INTEGER);
-	let body = [[WORK, WORK, CARRY, MOVE], [WORK, CARRY, MOVE, MOVE]][_.random(0, 1)];
+	let body = [WORK, CARRY, MOVE, MOVE];//[[WORK, WORK, CARRY, MOVE], [WORK, CARRY, MOVE, MOVE]][_.random(0, 1)];
 	manager.schedule_creep(name, body, {memory : {assigned_to : this.id}});
 	this.builders.number_requested += 1;
 };
@@ -209,6 +209,9 @@ StructureSpawn.prototype.tick_hauler = function(creep) {
 };
 
 StructureSpawn.prototype.tick_builder = function(creep) {
+	if (Game.time % 10 == 0) {
+		creep.target = NONE;
+	}
 	if (creep.full()) {
 		creep.task = 'build';
 	} else if (creep.empty()) {
@@ -226,7 +229,14 @@ StructureSpawn.prototype.tick_builder = function(creep) {
 			creep.pickup(targ2);
 		}
 	} else if (creep.task == 'gather') {
-		let targ = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
+		let targ = Game.getObjectById(creep.target);
+		if (!targ) {
+			let next_targ = _.last(_.sortBy(creep.room.find(FIND_DROPPED_RESOURCES), 'amount'));
+			if (next_targ) {
+				creep.target = next_targ.id;
+				targ = next_targ;
+			}
+		}
 		if (targ) {
 			if (creep.pickup(targ) == ERR_NOT_IN_RANGE) {
 				creep.moveTo(targ);
