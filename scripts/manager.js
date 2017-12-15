@@ -165,7 +165,7 @@ StructureSpawn.prototype.assign_worker = function(hauler) {
 
 StructureSpawn.prototype.schedule_hauler = function(manager) {
 	let name = "HAULER" + _.random(0, Number.MAX_SAFE_INTEGER);
-	manager.schedule_creep(name, [CARRY, MOVE], {memory : {assigned_to : this.id}});
+	manager.schedule_creep(name, [CARRY, CARRY, MOVE], {memory : {assigned_to : this.id}});
 };
 
 module.exports = {
