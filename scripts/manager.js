@@ -276,6 +276,9 @@ StructureSpawn.prototype.tick_creep_set = function(manager, set, tick_func_key, 
 	let toremove = [];
 	_.forEach(set.names, worker_name => {
 		let creep = Game.creeps[worker_name];
+		if (creep.spawning) {
+			return;
+		}
 		if (creep) {
 			this[tick_func_key](creep);
 		} else {
