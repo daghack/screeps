@@ -4,6 +4,7 @@ var Manager = function Manager(name, update_interval) {
 };
 add_memory(Manager.prototype, 'managers', manager => manager.name);
 memory_property(Manager.prototype, 'initialized', false);
+memory_property(Manager.prototype, 'start_tick', 0);
 memory_property(Manager.prototype, 'buildset', Object, true);
 memory_property(Manager.prototype, 'sources', Array, true);
 memory_property(Manager.prototype, 'creeps', Object, true);
@@ -45,7 +46,12 @@ Manager.prototype.initialize = function(room) {
 			this.schedule_build(spawner.room, STRUCTURE_ROAD, pos);
 		});
 	});
+	this.start_tick = Game.time;
 	this.initialized = true;
+};
+
+Manager.prototype.ticks_alive = function() {
+	return Game.now - this.start_tick;
 };
 
 Manager.prototype.schedule_build = function(room, struct, poslike) {
@@ -85,7 +91,12 @@ Manager.prototype.tick = function() {
 	});
 };
 
-Manager.prototype.schedule_creep = function(name, body, opts) {
+Manager.prototype.schedule_creep = function(name, body, opts, body2) {
+	if (body2) {
+		if (this.ticks_alive() > 100) {
+			body = body2;
+		}
+	}
 	let minscore = 1000000;
 	let selected_spawn = "";
 	_.forEach(this.spawners, function(spawner_name) {
