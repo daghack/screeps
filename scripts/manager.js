@@ -237,6 +237,10 @@ StructureSpawn.prototype.tick_builder = function(creep) {
 				creep.moveTo(targ);
 			}
 		}
+		let targ2 = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
+		if (targ2) {
+			creep.build(targ2);
+		}
 	}
 };
 
