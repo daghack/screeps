@@ -48,9 +48,9 @@ Source.prototype.tick = function(manager) {
 	console.log(JSON.stringify(this.memory));
 	_.forEach(this.slots, slot => {
 		if (slot.assigned && !Game.creeps[slot.assigned]) {
-			delete slot.assigned;
+			slot.assigned = NONE;
 		}
-		if (slot.assigned) {
+		if (slot.assigned != NONE) {
 			let harvester = this.assigned_harvesters[slot.assigned];
 			if (harvester.spawning) {
 				return;
