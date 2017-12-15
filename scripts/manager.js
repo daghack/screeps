@@ -24,6 +24,9 @@ Manager.prototype.initialize = function(room) {
 		this.spawners.push(spawner.name);
 	});
 	sources[0].schedule_harvester(this);
+	_.forEach(Game.spawns, spawner => {
+		spawner.schedule_hauler(this);
+	});
 	this.initialized = true;
 };
 
