@@ -118,36 +118,36 @@ Room.prototype.adjacent_plains = function(pos) {
 	return _.filter(area, {type : 'terrain', terrain: 'plain'});
 };
 
-memory_property(StructureSpawn.prototype, 'creep_count', 0);
-
-StructureSpawn.prototype.spawn = function(role) {
-	let ret = this.spawnCreep(role.parts, role.role + '_' + this.creep_count, {memory : {role : role.role}});
-	if (ret == OK) {
-		this.creep_count += 1;
-	}
-	return ret;
-};
-
-StructureSpawn.prototype.add_initial_build_orders = function() {
-	if (!this.memory.road_orders_issued) {
-		let sources = this.room.find(FIND_SOURCES);
-		_.forEach(sources, source => {
-			let spath = this.pos.findPathTo(source, {ignoreCreeps : true, ignoreRoads : true});
-			_.forEach(spath, position => {
-				this.room.add_to_build(position, STRUCTURE_ROAD);
-			});
-			let cpath = source.pos.findPathTo(this.room.controller, {ignoreCreeps : true, ignoreRoads : true});
-			_.forEach(cpath, position => {
-				this.room.add_to_build(position, STRUCTURE_ROAD);
-			});
-		});
-		let cpath = this.pos.findPathTo(this.room.controller, {ignoreCreeps : true, ignoreRoads : true});
-		_.forEach(cpath, position => {
-			this.room.add_to_build(position, STRUCTURE_ROAD);
-		});
-		this.memory.road_orders_issued = true;
-	}
-};
+//memory_property(StructureSpawn.prototype, 'creep_count', 0);
+//
+//StructureSpawn.prototype.spawn = function(role) {
+//	let ret = this.spawnCreep(role.parts, role.role + '_' + this.creep_count, {memory : {role : role.role}});
+//	if (ret == OK) {
+//		this.creep_count += 1;
+//	}
+//	return ret;
+//};
+//
+//StructureSpawn.prototype.add_initial_build_orders = function() {
+//	if (!this.memory.road_orders_issued) {
+//		let sources = this.room.find(FIND_SOURCES);
+//		_.forEach(sources, source => {
+//			let spath = this.pos.findPathTo(source, {ignoreCreeps : true, ignoreRoads : true});
+//			_.forEach(spath, position => {
+//				this.room.add_to_build(position, STRUCTURE_ROAD);
+//			});
+//			let cpath = source.pos.findPathTo(this.room.controller, {ignoreCreeps : true, ignoreRoads : true});
+//			_.forEach(cpath, position => {
+//				this.room.add_to_build(position, STRUCTURE_ROAD);
+//			});
+//		});
+//		let cpath = this.pos.findPathTo(this.room.controller, {ignoreCreeps : true, ignoreRoads : true});
+//		_.forEach(cpath, position => {
+//			this.room.add_to_build(position, STRUCTURE_ROAD);
+//		});
+//		this.memory.road_orders_issued = true;
+//	}
+//};
 
 Room.prototype.buildlist_visual = function() {
 	_.forEach(this.buildlist, position => {

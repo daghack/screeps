@@ -7,7 +7,6 @@ Source.prototype.init = function(manager) {
 	if (this.initialized) {
 		return;
 	}
-	console.log(this.id);
 	let slots = this.room.adjacent_plains(this.pos);
 	_.forEach(slots, slot => {
 		let roomPos = new RoomPosition(slot.x, slot.y, this.room.name);
@@ -15,7 +14,7 @@ Source.prototype.init = function(manager) {
 		this.slots.push(roomPos);
 	});
 	if (manager) {
-		this.request_harvester(manager);
+		this.schedule_harvester(manager);
 		//#TODO Move road registering here.
 	}
 	this.initialized = true;
@@ -35,10 +34,8 @@ Source.prototype.assign_harvester = function(harvester) {
 	this.slots[available_slot].assigned = harvester.name;
 };
 
-Source.prototype.request_harvester = function(manager) {
-	/*
-		* manager.request_creep([WORK, WORK, MOVE], {self_managed : false, assigned_to : this.id});
-	*/
+Source.prototype.schedule_harvester = function(manager) {
+	manager.schedule_creep([WORK, WORK, MOVE], {self_managed : false});
 };
 
 Source.prototype.tick = function(manager) {
@@ -54,7 +51,7 @@ Source.prototype.tick = function(manager) {
 			if (harvester.harvest(this) == ERR_NOT_IN_RANGE) {
 				this.moveTo(this, {visualizePathStyle:{}});
 			}
-		} else {
+		} else if (!slot.requested) {
 		}
 	});
 };
