@@ -173,19 +173,19 @@ StructureSpawn.prototype.assign_worker = function(worker) {
 };
 
 StructureSpawn.prototype.schedule_hauler = function(manager) {
-	let name = "HAULER" + _.random(0, Number.MAX_SAFE_INTEGER);
+	let name = "HAULER_" + _.random(0, Number.MAX_SAFE_INTEGER);
 	manager.schedule_creep(name, [CARRY, CARRY, MOVE], {memory : {assigned_to : this.id}});
 	this.haulers.number_requested += 1;
 };
 
 StructureSpawn.prototype.schedule_builder = function(manager) {
-	let name = "BUILDER" + _.random(0, Number.MAX_SAFE_INTEGER);
+	let name = "BUILDER_" + _.random(0, Number.MAX_SAFE_INTEGER);
 	manager.schedule_creep(name, [CARRY, WORK, MOVE, MOVE], {memory : {assigned_to : this.id}});
 	this.builders.number_requested += 1;
 };
 
 StructureSpawn.prototype.schedule_upgrader = function(manager) {
-	let name = "UPGRADER" + _.random(0, Number.MAX_SAFE_INTEGER);
+	let name = "UPGRADER_" + _.random(0, Number.MAX_SAFE_INTEGER);
 	manager.schedule_creep(name, [CARRY, WORK, MOVE, MOVE], {memory : {assigned_to : this.id}});
 	this.upgraders.number_requested += 1;
 };
