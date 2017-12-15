@@ -2,18 +2,10 @@ require('proto');
 require('source.proto');
 var m = require('manager');
 
-var harvester = require('harvester');
-var upgrade_harvester = require('upgrade_harvester');
-var spawnfill_harvester = require('spawnfill_harvester');
-
-var roles = {};
-roles[harvester.role] = harvester;
-roles[upgrade_harvester.role] = upgrade_harvester;
-roles[spawnfill_harvester.role] = spawnfill_harvester;
-
 function clean_memory() {
 	if (!Memory.init) {
-		Memory = {init : true};
+		_.forEach(Memory, (v, k) => delete Memory[k]);
+		Memory.init = true;
 	}
 	_.forEach (Memory.creeps, (creep, name) => {
 		if (!Game.creeps[name]) {
