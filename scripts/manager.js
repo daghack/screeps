@@ -164,10 +164,13 @@ StructureSpawn.prototype.assign_worker = function(worker) {
 	let worker_type = worker.name.split("_")[0];
 	if (worker_type == "HAULER") {
 		this.haulers.names.push(worker.name);
+		this.haulers.number_requested -= 1;
 	} else if (worker_type == "BUILDER") {
 		this.builders.names.push(worker.name);
+		this.builders.number_requested -= 1;
 	} else if (worker_type == "UPGRADER") {
 		this.upgraders.names.push(worker.name);
+		this.upgraders.number_requested -= 1;
 	}
 	worker.assigned = true;
 };
@@ -216,14 +219,17 @@ StructureSpawn.prototype.tick_builder = function(creep) {
 	} else if (creep.empty()) {
 		creep.task = 'gather';
 	}
-	if (creep.task == 'return') {
-		if (creep.transfer(this, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-			creep.moveTo(this);
-		}
-	} else if (creep.task == 'build') {
+	if (creep.task == 'build') {
 		let targ = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
 		if (targ) {
 			if (creep.build(targ) == ERR_NOT_IN_RANGE) {
+				creep.moveTo(targ);
+			}
+		}
+	} else if (creep.task == 'gather') {
+		let targ = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
+		if (targ) {
+			if (creep.pickup(targ) == ERR_NOT_IN_RANGE) {
 				creep.moveTo(targ);
 			}
 		}
