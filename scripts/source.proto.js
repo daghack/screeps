@@ -37,7 +37,7 @@ Source.prototype.assign_worker = function(harvester) {
 
 Source.prototype.schedule_harvester = function(manager) {
 	let name = "HARVESTER_" + _.random(0, Number.MAX_SAFE_INTEGER);
-	manager.schedule_creep(name, [WORK, WORK, MOVE], {assigned_to : this.id});
+	manager.schedule_creep(name, [WORK, WORK, MOVE], {memory : {assigned_to : this.id}});
 };
 
 Source.prototype.tick = function(manager) {
