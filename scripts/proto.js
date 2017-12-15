@@ -42,9 +42,13 @@ global.add_memory = function(obj, tag, unique_id) {
 	});
 };
 
-function to_str(pos) {
-	return pos.x + '_' + pos.y;
-}
+global.to_str = function (obj) {
+	return obj.x + '_' + obj.y;
+};
+
+RoomPosition.prototype.to_str = function () {
+	return this.roomName + "_" + this.x + '_' + this.y;
+};
 
 Creep.prototype.upgradeRoom = function(room) {
 		if (this.upgradeController(room.controller) == ERR_NOT_IN_RANGE) {

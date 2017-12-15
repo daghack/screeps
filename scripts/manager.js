@@ -26,8 +26,26 @@ Manager.prototype.initialize = function(room) {
 	sources[0].schedule_harvester(this);
 	_.forEach(Game.spawns, spawner => {
 		spawner.schedule_hauler(this);
+		_.forEach(sources, source => {
+			let spath = spawner.pos.findPathTo(source, {ignoreCreeps : true, ignoreRoads : true});
+			_.forEach(spath, pos => {
+				this.schedule_build(spawner.room, STRUCTURE_ROAD, pos);
+			});
+		});
+		let cpath = spawner.pos.findPathTo(spawner.room.controller, {ignoreCreeps : true, ignoreRoads : true});
+		_.forEach(cpath, pos => {
+			this.schedule_build(spawner.room, STRUCTURE_ROAD, pos);
+		});
 	});
 	this.initialized = true;
+};
+
+Manager.prototype.schedule_build = function(room, struct, poslike) {
+	let pos = new RoomPosition(poslike.x, poslike.y, room.name);
+	let pos_str = pos.to_str();
+	if (!this.buildset[pos_str]) {
+		this.buildset[pos_str] = {x : pos.x, y : pos.y, room : pos.roomName, struct : struct};
+	}
 };
 
 Manager.prototype.tick = function() {
@@ -35,6 +53,20 @@ Manager.prototype.tick = function() {
 	if (Game.time % this.update_interval == 0) {
 		console.log("Manager Update");
 	}
+
+	let todel = [];
+	_.forEach(this.buildset, (build_order, key) => {
+		let room = Game.rooms[build_order.room];
+		if (room.createConstructionSite(build_order.x, build_order.y, build_order.struct) == OK) {
+			todel.push(key);
+		} else {
+			room.visual.circle(build_order,
+				{fill : 'transparent', lineStyle : 'dashed', radius : 0.4, stroke : 'white'}
+			);
+		}
+	});
+	_.forEach(todel, key => delete this.buildset[key]);
+
 	_.forEach(this.sources, source_id => {
 		let source = Game.getObjectById(source_id);
 		source.tick(this);
