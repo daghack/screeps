@@ -78,9 +78,10 @@ StructureSpawn.prototype.parts_in_queue = function() {
 StructureSpawn.prototype.tick = function() {
 	console.log("Spawner " + this.name + " tick");
 	if (this.spawning) {
-		let creep = Game.creeps[spawn.spawning.name];
+		let creep = Game.creeps[this.spawning.name];
 		if (creep && !creep.assigned) {
 			console.log("Creep about to be assigned to object " + creep.assigned_to);
+			console.log(JSON.stringify(creep.memory));
 			let owner = Game.getObjectById(creep.assigned_to);
 			owner.assign_worker(creep);
 		}
