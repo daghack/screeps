@@ -7,6 +7,10 @@ global.memory_property = function(obj, key, def, is_constructor) {
 		get : function() {
 			if (!this.memory[key]) {
 				if(is_constructor) {
+					// Because defineProperty only ever is called once, def will by default be a shared object.
+					// For constants this is fine, but if we want a list or object, we need to pass in the constructor.
+					// This will cause def to be the constructor so that each time we fetch,
+					// if we don't already have something at that key in the memory, we'll generate the new object.
 					this.memory[key] = new def();
 				} else {
 					this.memory[key] = def;
@@ -18,6 +22,24 @@ global.memory_property = function(obj, key, def, is_constructor) {
 			this.memory[key] = x;
 		}
 	});
+};
+
+global.add_memory = function(obj, tag, unique_id) {
+	if (!Memory[tag]) {
+		Memory[tag] = {};
+	}
+	Object.defineProperty(obj, 'memory', {
+		get : function() {
+			let obj_id = unique_id(obj);
+			if (!Memory[tag][obj_id]) {
+				Memory[tag][obj_id] = {};
+			}
+			return Memory[tag][obj_id];
+		},
+		set : function(x) {
+			Memory[tag][unique_id(obj)] = x;
+		}
+	})
 };
 
 function to_str(pos) {
