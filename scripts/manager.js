@@ -117,9 +117,9 @@ StructureSpawn.prototype.parts_in_queue = function() {
 
 StructureSpawn.prototype.tick = function(manager) {
 	console.log("Spawner " + this.name + " Tick");
-	this.tick_creep_set(manager, this.haulers, this.tick_hauler, 1, 'schedule_hauler');
-	this.tick_creep_set(manager, this.builders, this.tick_builder, 2, 'schedule_builder');
-	this.tick_creep_set(manager, this.upgraders, this.tick_upgrader, 0, 'schedule_upgrader');
+	this.tick_creep_set(manager, this.haulers, 'tick_hauler', 1, 'schedule_hauler');
+	this.tick_creep_set(manager, this.builders, 'tick_builder', 2, 'schedule_builder');
+	this.tick_creep_set(manager, this.upgraders, 'tick_upgrader', 0, 'schedule_upgrader');
 	if (this.spawning) {
 		let creep = Game.creeps[this.spawning.name];
 		if (creep && !creep.assigned) {
@@ -184,18 +184,22 @@ StructureSpawn.prototype.tick_hauler = function(creep) {
 		creep.task = 'gather';
 	}
 	if (creep.task == 'return') {
-		if (creep.transfer(this, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+		let err = creep.transfer(this, RESOURCE_ENERGY);
+		if (err == ERR_NOT_IN_RANGE) {
 			creep.moveTo(this);
+		} else if (err != OK) {
+			console.log("ERROR: " + err);
 		}
 	} else if (creep.task == 'gather') {
-		if (creep.target == NONE) {
-			let targ = _.last(_.sortBy(creep.room.find(FIND_DROPPED_RESOURCES), 'amount'));
-			if (targ) {
-				creep.target = targ.id;
+		let targ = Game.getObjectById(creep.target);
+		if (!targ) {
+			let next_targ = _.last(_.sortBy(creep.room.find(FIND_DROPPED_RESOURCES), 'amount'));
+			if (next_targ) {
+				creep.target = next_targ.id;
+				targ = next_targ;
 			}
 		}
-		if (creep.target != NONE) {
-			let targ = Game.getObjectById(creep.target);
+		if (targ) {
 			if (creep.pickup(targ) == ERR_NOT_IN_RANGE) {
 				creep.moveTo(targ);
 			}
@@ -237,12 +241,12 @@ StructureSpawn.prototype.tick_builder = function(creep) {
 StructureSpawn.prototype.tick_upgrader = function(creep) {
 };
 
-StructureSpawn.prototype.tick_creep_set = function(manager, set, tick_func, count, schedule_func_key) {
+StructureSpawn.prototype.tick_creep_set = function(manager, set, tick_func_key, count, schedule_func_key) {
 	let toremove = [];
 	_.forEach(set.names, worker_name => {
 		let creep = Game.creeps[worker_name];
 		if (creep) {
-			tick_func(creep);
+			this[tick_func_key](creep);
 		} else {
 			toremove.push(worker_name);
 		}
