@@ -12,6 +12,9 @@ roles[upgrade_harvester.role] = upgrade_harvester;
 roles[spawnfill_harvester.role] = spawnfill_harvester;
 
 function clean_memory() {
+	if (!Memory.init) {
+		Memory = {init : true};
+	}
 	_.forEach (Memory.creeps, (creep, name) => {
 		if (!Game.creeps[name]) {
 			delete Memory.creeps[name];

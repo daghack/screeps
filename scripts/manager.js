@@ -13,7 +13,6 @@ Manager.prototype.initialize = function(room) {
 	if (this.initialized) {
 		return;
 	}
-	Memory = {};
 	console.log("Initializing Manager");
 	let sources = room.find(FIND_SOURCES);
 	_.forEach(sources, source => {
