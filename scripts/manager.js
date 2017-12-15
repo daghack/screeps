@@ -41,12 +41,6 @@ Manager.prototype.tick = function() {
 	});
 	_.forEach(this.spawners, spawner_name => {
 		let spawn = Game.spawns[spawner_name];
-		let creep = Game.creeps[spawn.spawning.name];
-		if (creep && !creep.assigned) {
-			console.log("Creep about to be assigned to object " + creep.assigned_to);
-			let owner = Game.getObjectById(creep.assigned_to);
-			owner.assign_worker(creep);
-		}
 		spawn.tick();
 	});
 };
@@ -83,7 +77,16 @@ StructureSpawn.prototype.parts_in_queue = function() {
 
 StructureSpawn.prototype.tick = function() {
 	console.log("Spawner " + this.name + " tick");
-	if (!this.isActive() || this.spawning || this.spawn_queue.length == 0) {
+	if (this.spawning) {
+		let creep = Game.creeps[spawn.spawning.name];
+		if (creep && !creep.assigned) {
+			console.log("Creep about to be assigned to object " + creep.assigned_to);
+			let owner = Game.getObjectById(creep.assigned_to);
+			owner.assign_worker(creep);
+		}
+		return;
+	}
+	if (!this.isActive() || this.spawn_queue.length == 0) {
 		return;
 	}
 	let next_spawn = this.spawn_queue[0];
