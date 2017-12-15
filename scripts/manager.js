@@ -150,6 +150,9 @@ StructureSpawn.prototype.tick = function(manager) {
 	let err = this.spawnCreep(next_spawn.body, next_spawn.name, next_spawn.opts);
 	if (err == OK) {
 		this.spawn_queue.shift();
+	} else if (err == -3) {
+		next_spawn.name = next_spawn.name + _.random(0, 1111);
+		this.spawnCreep(next_spawn.body, next_spawn.name, next_spawn.opts);
 	} else {
 		console.log("SPAWN ERROR: ", err);
 	}
