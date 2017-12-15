@@ -3,7 +3,6 @@ var Manager = function Manager(name, update_interval) {
 	this.update_interval = update_interval;
 };
 add_memory(Manager.prototype, 'managers', manager => manager.name);
-//memory_property(Manager.prototype, 'rooms', Object, true);
 memory_property(Manager.prototype, 'initialized', false);
 memory_property(Manager.prototype, 'buildset', Object, true);
 memory_property(Manager.prototype, 'sources', Array, true);

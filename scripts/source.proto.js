@@ -10,7 +10,7 @@ Source.prototype.init = function() {
 	_.forEach(slots, slot => {
 		let roomPos = new RoomPosition(slot.x, slot.y, this.room.name);
 		roomPos.assigned = NONE;
-		roomPos.request = false;
+		roomPos.requested = false;
 		this.slots.push(roomPos);
 	});
 	this.initialized = true;
@@ -26,7 +26,8 @@ Source.prototype.assign_worker = function(harvester) {
 		return;
 	}
 	this.slots[available_slot].assigned = harvester.name;
-	harvester.assigned = true;
+	this.slots[available_slot].requested = false;
+	harvester.assigned = NONE;
 };
 
 Source.prototype.schedule_harvester = function(manager) {
@@ -51,7 +52,7 @@ Source.prototype.tick = function(manager) {
 			}
 		} else if (slot.assigned == NONE && !slot.requested) {
 			this.schedule_harvester(manager);
-			slot.request = true;
+			slot.requested = true;
 		}
 	});
 };
