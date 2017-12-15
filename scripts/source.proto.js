@@ -50,7 +50,8 @@ Source.prototype.tick = function(manager) {
 				return;
 			}
 			if (harvester.harvest(this) == ERR_NOT_IN_RANGE) {
-				harvester.moveTo(this, {visualizePathStyle:{}});
+				let pos = new RoomPosition(slot.x, slot.y, slot.roomName);
+				harvester.moveTo(pos, {visualizePathStyle:{}});
 			}
 		} else if (!slot.requested) {
 		}
