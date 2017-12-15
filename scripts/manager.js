@@ -115,21 +115,10 @@ StructureSpawn.prototype.parts_in_queue = function() {
 	return _.sum(this.spawn_queue, body => body.length);
 };
 
-StructureSpawn.prototype.tick = function() {
+StructureSpawn.prototype.tick = function(manager) {
 	console.log("Spawner " + this.name + " Tick");
+	this.tick_creep_set(manager, this.haulers, this.tick_hauler, 1, this.schedule_hauler);
 	let toremove = [];
-	_.forEach(this.haulers.names, hauler_name => {
-		let creep = Game.creeps[hauler_name];
-		if (creep) {
-			this.tick_hauler(creep);
-		} else {
-			toremove.push(hauler_name);
-		}
-	});
-	_.forEach(toremove, hauler_name => {
-		_.remove(this.haulers, val => val == hauler_name);
-	});
-	toremove = [];
 	_.forEach(this.builders.names, builder_name => {
 		let creep = Game.creeps[builder_name];
 		if (creep) {
@@ -247,6 +236,24 @@ StructureSpawn.prototype.tick_builder = function(creep) {
 		if (targ2) {
 			creep.build(targ2);
 		}
+	}
+};
+
+StructureSpawn.prototype.tick_creep_set = function(manager, set, tick_func, count, schedule_func) {
+	let toremove = [];
+	_.forEach(set.names, worker_name => {
+		let creep = Game.creeps[worker_name];
+		if (creep) {
+			tick_func(creep);
+		} else {
+			toremove.push(worker_name);
+		}
+	});
+	_.forEach(toremove, worker_name => {
+		_.remove(set.names, val => val == worker_name);
+	});
+	if (set.names.length + set.number_requested < count) {
+		schedule_func(manager);
 	}
 };
 
