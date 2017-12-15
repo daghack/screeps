@@ -1,7 +1,7 @@
 var Manager = function Manager(name, update_interval) {
 	this.name = name;
 	this.update_interval = update_interval;
-}
+};
 add_memory(Manager.prototype, 'managers', manager => manager.name);
 //memory_property(Manager.prototype, 'rooms', Object, true);
 memory_property(Manager.prototype, 'buildset', Object, true);
@@ -35,11 +35,11 @@ Manager.prototype.tick = function() {
 Manager.prototype.schedule_creep = function(name, body, opts) {
 	let minscore = 1000000;
 	let selected_spawn = "";
-	_.forEach(this.spawners, spawner => {
-		let piq = spawner.parts_in_queue();
+	_.forEach(this.spawners, function(spawner_name) {
+		let piq = Game.spawns[spawner_name].parts_in_queue();
 		if (piq < minscore) {
 			minscore = piq;
-			selected_spawn = spawner.name;
+			selected_spawn = spawner_name;
 		}
 	});
 	Game.spawns[selected_spawn].add_to_queue(name, body, opts);
