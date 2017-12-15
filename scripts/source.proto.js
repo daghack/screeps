@@ -13,7 +13,7 @@
 //		Memory.sources[this.id] = x;
 //	}
 //});
-add_memory(Source.prototype, 'sources', source => source.id);
+add_memory(Source.prototype, 'sources', source => this.id);
 memory_property(Source.prototype, 'initialized', false);
 memory_property(Source.prototype, 'assigned_harvesters', Object, true);
 memory_property(Source.prototype, 'slots', Array, true);
