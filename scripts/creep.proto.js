@@ -19,9 +19,6 @@ Creep.prototype.travelTo = function(t, opts) {
 			plainCost : 2,
 			swampCost : 6,
 			roomCallback : roomname => {
-				console.log("CALLBACK DEBUG: ", roomname);
-				console.log("CALLBACK DEBUG: ", JSON.stringify(Game.rooms));
-				console.log("CALLBACK DEBUG: ", JSON.stringify(Game.rooms[roomname]));
 				if (!Game.rooms[roomname]) {
 					return new PathFinder.CostMatrix();
 				} else {
@@ -33,10 +30,8 @@ Creep.prototype.travelTo = function(t, opts) {
 	if (ret.incomplete) {
 		return ERR_NO_PATH;
 	}
-	console.log("MOVE DEBUG: ", JSON.stringify(ret));
 	let pos = ret.path[0];
 	let err = this.move(this.pos.getDirectionTo(pos));
-	console.log("MOVE DEBUG: " + err);
 	return err;
 //	if (opts) {
 //		return this.moveTo(t, opts);

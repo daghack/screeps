@@ -22,7 +22,6 @@ Room.prototype.adjacent_nonwall = function(pos) {
 
 Object.defineProperty(Room.prototype, 'cost_matrix', {
 	get : function() {
-		console.log("FETCHING COST_MATRIX");
 		if(!this._cost_matrix) {
 			let cmatrix = new PathFinder.CostMatrix();
 			this.find(FIND_STRUCTURES).forEach(function(struct) {
@@ -38,11 +37,12 @@ Object.defineProperty(Room.prototype, 'cost_matrix', {
 					cmatrix.set(slot.x, slot.y, 255);
 				});
 			});
+			_.forEach(this.creeps, creep => {
+				cmatrix.set(creep.pos.x, creep.pos.y, 255);
+			});
 			this._cost_matrix = cmatrix;
-			console.log("COST MATRIX RETURNED:", JSON.stringify(this._cost_matrix.serialize()));
 			return this._cost_matrix;
 		} else {
-			console.log("COST MATRIX EXISTS:", JSON.stringify(this._cost_matrix.serialize()));
 			return this._cost_matrix;
 		}
 	},
