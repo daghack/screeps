@@ -30,6 +30,7 @@ Creep.prototype.travelTo = function(t, opts) {
 	if (ret.incomplete) {
 		return ERR_NO_PATH;
 	}
+	this.room.visual.poly(ret.path, {stroke : 'aqua', lineStyle : 'dashed', strokeWidth : 0.5});
 	let pos = ret.path[0];
 	let err = this.move(this.pos.getDirectionTo(pos));
 	return err;
