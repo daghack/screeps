@@ -205,7 +205,7 @@ StructureSpawn.prototype.tick_hauler = function(creep) {
 	if (creep.task == 'return') {
 		let err = creep.transfer(this, RESOURCE_ENERGY);
 		if (err == ERR_NOT_IN_RANGE) {
-			creep.moveTo(this);
+			creep.travelTo(this);
 		} else if (err != OK) {
 			console.log("ERROR: " + err);
 		}
@@ -220,7 +220,7 @@ StructureSpawn.prototype.tick_hauler = function(creep) {
 		}
 		if (targ) {
 			if (creep.pickup(targ) == ERR_NOT_IN_RANGE) {
-				creep.moveTo(targ);
+				creep.travelTo(targ);
 			}
 		}
 	}
@@ -239,7 +239,7 @@ StructureSpawn.prototype.tick_builder = function(creep) {
 		let targ = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
 		if (targ) {
 			if (creep.build(targ) == ERR_NOT_IN_RANGE) {
-				creep.moveTo(targ);
+				creep.travelTo(targ);
 			}
 		}
 		let targ2 = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
@@ -257,7 +257,7 @@ StructureSpawn.prototype.tick_builder = function(creep) {
 		}
 		if (targ) {
 			if (creep.pickup(targ) == ERR_NOT_IN_RANGE) {
-				creep.moveTo(targ);
+				creep.travelTo(targ);
 			}
 		}
 		let targ2 = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
@@ -275,13 +275,13 @@ StructureSpawn.prototype.tick_upgrader = function(creep) {
 	}
 	if (creep.task == 'upgrade') {
 		if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
-			creep.moveTo(creep.room.controller);
+			creep.travelTo(creep.room.controller);
 		}
 	} else if (creep.task == 'gather') {
 		let targ = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
 		if (targ) {
 			if (creep.pickup(targ) == ERR_NOT_IN_RANGE) {
-				creep.moveTo(targ);
+				creep.travelTo(targ);
 			}
 		}
 	}
