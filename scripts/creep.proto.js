@@ -24,12 +24,6 @@ Creep.prototype.travelTo = function(t, opts) {
 };
 
 Creep.prototype.travelToTarget = function(opts) {
-	let t = Game.getObjectById(target_id);
-	if (t) {
-		if (opts) {
-			return this.moveTo(t, opts);
-		} else {
-			return this.moveTo(t, {ignoreCreeps : true});
-		}
-	}
+	let t = Game.getObjectById(this.target);
+	return this.travelTo(t);
 };
