@@ -34,7 +34,7 @@ Room.prototype.cost_matrix = function(path_around_creeps) {
 		if (path_around_creeps) {
 			_.forEach(this.sources(), source => {
 				_.forEach(source.slots, slot => {
-					cmatrix.set(slot.x, slot.y, 255);
+					cmatrix.set(slot.x, slot.y, 10);
 				});
 			});
 		}
