@@ -22,7 +22,7 @@ Creep.prototype.travelTo = function(t, opts) {
 				if (!Game.rooms[roomname]) {
 					return new PathFinder.CostMatrix();
 				} else {
-					return Game.rooms[roomname].cost_matrix;
+					return Game.rooms[roomname].cost_matrix();
 				}
 			}
 		}
