@@ -49,7 +49,8 @@ Source.prototype.schedule_harvester = function(manager, slot) {
 Source.prototype.tick = function(manager) {
 	console.log("Source " + this.id + " Tick");
 	_.forEach(this.slots, slot => {
-		let resources = this.room.lookForAt(LOOK_ENERGY);
+		let room_pos = new RoomPosition(slot.x, slot.y, this.room.name);
+		let resources = this.room.lookForAt(LOOK_ENERGY, room_pos);
 		if (resources.length > 0) {
 			slot.energy_available = resources[0].amount;
 		} else {
@@ -65,7 +66,7 @@ Source.prototype.tick = function(manager) {
 			}
 			if (harvester.pos.x != slot.x || harvester.pos.y != slot.y) {
 				let pos = new RoomPosition(slot.x, slot.y, slot.roomName);
-				harvester.moveTo(pos);
+				harvester.travelTo(pos);
 			} else {
 				harvester.harvest(this);
 			}
