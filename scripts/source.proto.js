@@ -1,6 +1,7 @@
 add_memory(Source.prototype, 'sources', source => source.id);
 memory_property(Source.prototype, 'initialized', false);
 memory_property(Source.prototype, 'slots', Array, true);
+memory_property(Source.prototype, 'scheduled_withdraws', Array, true);
 
 Source.prototype.init = function() {
 	console.log("Initializing Source");
@@ -9,10 +10,11 @@ Source.prototype.init = function() {
 	}
 	let slots = this.room.adjacent_nonwall(this.pos);
 	_.forEach(slots, slot => {
-		let roomPos = new RoomPosition(slot.x, slot.y, this.room.name);
-		roomPos.assigned = NONE;
-		roomPos.requested = false;
-		this.slots.push(roomPos);
+		let room_pos = new RoomPosition(slot.x, slot.y, this.room.name);
+		room_pos.assigned = NONE;
+		room_pos.requested = false;
+		room_pos.energy_available = 0;
+		this.slots.push(room_pos);
 	});
 	this.initialized = true;
 };
@@ -47,6 +49,12 @@ Source.prototype.schedule_harvester = function(manager, slot) {
 Source.prototype.tick = function(manager) {
 	console.log("Source " + this.id + " Tick");
 	_.forEach(this.slots, slot => {
+		let resources = this.room.lookForAt(LOOK_ENERGY);
+		if (resources.length > 0) {
+			slot.energy_available = resources[0].amount;
+		} else {
+			slot.energy_available = 0;
+		}
 		if (slot.assigned != NONE && !Game.creeps[slot.assigned]) {
 			slot.assigned = NONE;
 		}
@@ -65,4 +73,7 @@ Source.prototype.tick = function(manager) {
 			this.schedule_harvester(manager, slot);
 		}
 	});
+};
+
+Source.prototype.schedule_withdraw = function() {
 };
