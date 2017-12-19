@@ -14,18 +14,30 @@ Creep.prototype.full = function() {
 
 Creep.prototype.travelTo = function(t, opts) {
 	let goal = {pos : t.pos, range : 1};
-	let ret = Pathfinder.search(
+	let ret = PathFinder.search(
 		this.pos, goal, {
 			plainCost : 2,
 			swampCost : 6,
-			roomCallback : roomname => { return Game.rooms[roomname].cost_matrix; }
+			roomCallback : roomname => {
+				console.log("CALLBACK DEBUG: ", roomname);
+				console.log("CALLBACK DEBUG: ", JSON.stringify(Game.rooms));
+				console.log("CALLBACK DEBUG: ", JSON.stringify(Game.rooms[roomname]));
+				if (!Game.rooms[roomname]) {
+					return new PathFinder.CostMatrix();
+				} else {
+					return Game.rooms[roomname].cost_matrix;
+				}
+			}
 		}
 	);
 	if (ret.incomplete) {
 		return ERR_NO_PATH;
 	}
-	let pos = ret.pos[0];
-	return this.move(this.pos.getDirectionTo(pos));
+	console.log("MOVE DEBUG: ", JSON.stringify(ret));
+	let pos = ret.path[0];
+	let err = this.move(this.pos.getDirectionTo(pos));
+	console.log("MOVE DEBUG: " + err);
+	return err;
 //	if (opts) {
 //		return this.moveTo(t, opts);
 //	} else {
