@@ -13,7 +13,12 @@ Creep.prototype.full = function() {
 };
 
 Creep.prototype.travelTo = function(t, opts) {
-	let goal = {pos : t.pos, range : 1};
+	let goal = {};
+	if (t.pos) {
+		goal = {pos : t.pos, range : 1};
+	} else {
+		goal = {pos : t, range : 0};
+	}
 	let ret = PathFinder.search(
 		this.pos, goal, {
 			plainCost : 2,
