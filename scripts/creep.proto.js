@@ -17,7 +17,8 @@ Creep.prototype.travelTo = function(t, opts) {
 		if (opts) {
 			return this.moveTo(t, opts);
 		} else {
-			return this.moveTo(t, {ignoreCreeps : true});
+			//return this.moveTo(t, {ignoreCreeps : true});
+			return this.moveTo(t);
 		}
 	}
 };
