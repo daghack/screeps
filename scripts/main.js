@@ -1,4 +1,5 @@
 require('proto');
+require('room.proto');
 require('creep.proto');
 require('source.proto');
 var m = require('manager');
