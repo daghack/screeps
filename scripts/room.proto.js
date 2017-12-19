@@ -36,7 +36,8 @@ Room.prototype.cost_matrix = function() {
 				cmatrix.set(slot.x, slot.y, 255);
 			});
 		});
-		_.forEach(this.creeps, creep => {
+		let room_creeps = this.find(FIND_CREEPS);
+		_.forEach(room_creeps, creep => {
 			cmatrix.set(creep.pos.x, creep.pos.y, 255);
 		});
 		this._cost_matrix = cmatrix;
