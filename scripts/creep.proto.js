@@ -13,17 +13,32 @@ Creep.prototype.full = function() {
 };
 
 Creep.prototype.travelTo = function(t, opts) {
-	if (t) {
-		if (opts) {
-			return this.moveTo(t, opts);
-		} else {
-			//return this.moveTo(t, {ignoreCreeps : true});
-			return this.moveTo(t);
+	let goal = {pos : t.pos, range : 1};
+	let ret = Pathfinder.search(
+		this.pos, goal, {
+			plainCost : 2,
+			swampCost : 6,
+			roomCallback : roomname => { return Game.rooms[roomname].cost_matrix; }
 		}
+	);
+	if (ret.incomplete) {
+		return ERR_NO_PATH;
 	}
+	let pos = ret.pos[0];
+	return this.move(this.pos.getDirectionTo(pos));
+//	if (opts) {
+//		return this.moveTo(t, opts);
+//	} else {
+//		//return this.moveTo(t, {ignoreCreeps : true});
+//		return this.moveTo(t);
+//	}
 };
 
 Creep.prototype.travelToTarget = function(opts) {
 	let t = Game.getObjectById(this.target);
-	return this.travelTo(t);
+	if (t) {
+		return this.travelTo(t);
+	} else {
+		return ERR_INVALID_TARGET;
+	}
 };
