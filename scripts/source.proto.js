@@ -57,7 +57,7 @@ Source.prototype.tick = function(manager) {
 			}
 			if (harvester.pos.x != slot.x || harvester.pos.y != slot.y) {
 				let pos = new RoomPosition(slot.x, slot.y, slot.roomName);
-				harvester.moveTo(pos, {visualizePathStyle:{}});
+				harvester.travelTo(pos);
 			} else {
 				harvester.harvest(this);
 			}
