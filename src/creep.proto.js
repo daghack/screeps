@@ -52,7 +52,7 @@ Creep.prototype.travelTo = function(t) {
 	if (this.move_status && this.last_pos.x == this.pos.x && this.last_pos.y == this.pos.y) {
 		err = this.travelToFunc(t, {ignore_creeps : false});
 	} else {
-		err = this.travelToFunc(t);
+		err = this.travelToFunc(t, {ignore_creeps : true});
 	}
 	if (err == OK) {
 		this.move_status = true;
