@@ -38,10 +38,12 @@ Room.prototype.cost_matrix = function(path_around_creeps) {
 				});
 			});
 		}
-		let room_creeps = this.find(FIND_CREEPS);
-		_.forEach(room_creeps, creep => {
-			cmatrix.set(creep.pos.x, creep.pos.y, 255);
-		});
+		if (path_around_creeps) {
+			let room_creeps = this.find(FIND_CREEPS);
+			_.forEach(room_creeps, creep => {
+				cmatrix.set(creep.pos.x, creep.pos.y, 255);
+			});
+		}
 		this._cost_matrix = cmatrix;
 		return this._cost_matrix;
 	} else {
