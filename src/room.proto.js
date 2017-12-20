@@ -20,7 +20,7 @@ Room.prototype.adjacent_nonwall = function(pos) {
 	});
 };
 
-Room.prototype.cost_matrix = function(path_around_creeps) {
+Room.prototype.cost_matrix = function(ignore_creeps) {
 	if(!this._cost_matrix) {
 		let cmatrix = new PathFinder.CostMatrix();
 		this.find(FIND_STRUCTURES).forEach(function(struct) {
@@ -38,7 +38,7 @@ Room.prototype.cost_matrix = function(path_around_creeps) {
 				});
 			});
 		}
-		if (path_around_creeps) {
+		if (!ignore_creeps) {
 			let room_creeps = this.find(FIND_CREEPS);
 			_.forEach(room_creeps, creep => {
 				cmatrix.set(creep.pos.x, creep.pos.y, 255);

@@ -29,11 +29,7 @@ Creep.prototype.travelToFunc = function(t, opts) {
 				if (!Game.rooms[roomname]) {
 					return new PathFinder.CostMatrix();
 				} else {
-					if (opts && opts.ignore_creeps) {
-						return Game.rooms[roomname].cost_matrix();
-					} else {
-						return Game.rooms[roomname].cost_matrix(true);
-					}
+					return Game.rooms[roomname].cost_matrix(opts && opts.ignore_creeps);
 				}
 			}
 		}
