@@ -3,6 +3,8 @@ memory_property(Creep.prototype, 'assigned_to', NONE);
 memory_property(Creep.prototype, 'task', NONE);
 memory_property(Creep.prototype, 'target', NONE);
 memory_property(Creep.prototype, 'work_order', Object, true);
+memory_property(Creep.prototype, 'move_status', true);
+memory_property(Creep.prototype, 'last_pos', Object, true);
 
 Creep.prototype.empty = function() {
 	return _.sum(this.carry) == 0;
@@ -12,7 +14,7 @@ Creep.prototype.full = function() {
 	return _.sum(this.carry) == this.carryCapacity;
 };
 
-Creep.prototype.travelTo = function(t, opts) {
+Creep.prototype.travelToFunc = function(t, opts) {
 	let goal = {};
 	if (t.pos) {
 		goal = {pos : t.pos, range : 1};
@@ -27,7 +29,11 @@ Creep.prototype.travelTo = function(t, opts) {
 				if (!Game.rooms[roomname]) {
 					return new PathFinder.CostMatrix();
 				} else {
-					return Game.rooms[roomname].cost_matrix(true);
+					if (opts && opts.ignore_creeps) {
+						return Game.rooms[roomname].cost_matrix();
+					} else {
+						return Game.rooms[roomname].cost_matrix(true);
+					}
 				}
 			}
 		}
@@ -39,6 +45,21 @@ Creep.prototype.travelTo = function(t, opts) {
 	let pos = ret.path[0];
 	let err = this.move(this.pos.getDirectionTo(pos));
 	return err;
+};
+
+Creep.prototype.travelTo = function(t) {
+	let err = OK;
+	if (this.move_status && this.last_pos.x == this.pos.x && this.last_pos.y == this.pos.y) {
+		err = this.travelTo(t, {ignore_creeps : false});
+	} else {
+		err = this.travelTo(t);
+	}
+	if (err == OK) {
+		this.move_status = true;
+	} else {
+		this.move_status = false;
+	}
+	this.last_pos = this.pos;
 };
 
 Creep.prototype.travelToTarget = function(opts) {
