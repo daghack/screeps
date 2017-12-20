@@ -50,7 +50,7 @@ Creep.prototype.travelToFunc = function(t, opts) {
 Creep.prototype.travelTo = function(t) {
 	let err = OK;
 	if (this.move_status && this.last_pos.x == this.pos.x && this.last_pos.y == this.pos.y) {
-		err = this.travelToFunc(t, {ignore_creeps : true});
+		err = this.travelToFunc(t, {ignore_creeps : false});
 	} else {
 		err = this.travelToFunc(t, {ignore_creeps : true});
 	}
