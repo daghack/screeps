@@ -242,47 +242,56 @@ StructureSpawn.prototype.tick_hauler = function(creep, manager) {
 	//}
 };
 
-StructureSpawn.prototype.tick_builder = function(creep) {
-	if (Game.time % 10 == 0) {
-		creep.target = NONE;
-	}
-	if (creep.full()) {
-		creep.task = 'build';
-		creep.cache_index = creep.cached_path.length;
-	} else if (creep.empty()) {
-		creep.task = 'gather';
-		creep.cache_index = creep.cached_path.length;
-	}
-	if (creep.task == 'build') {
-		let targ = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
-		if (targ) {
-			if (creep.build(targ) == ERR_NOT_IN_RANGE) {
-				creep.travelTo(targ);
-			}
-		}
-		let targ2 = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
-		if (targ2) {
-			creep.pickup(targ2);
-		}
-	} else if (creep.task == 'gather') {
-		let targ = Game.getObjectById(creep.target);
-		if (!targ) {
-			let next_targ = _.last(_.sortBy(creep.room.find(FIND_DROPPED_RESOURCES), 'amount'));
-			if (next_targ) {
-				creep.target = next_targ.id;
-				targ = next_targ;
-			}
-		}
-		if (targ) {
-			if (creep.pickup(targ) == ERR_NOT_IN_RANGE) {
-				creep.travelTo(targ);
-			}
-		}
-		let targ2 = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
-		if (targ2) {
-			creep.build(targ2);
+StructureSpawn.prototype.tick_builder = function(creep, manager) {
+	if (!creep.work_order.target) {
+		let closest_site = this.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
+		if (closest_site) {
+			creep.work_order = {target : closest_site.id, action : 'build'};
+		} else {
+			//Repair shit?
 		}
 	}
+	creep.perform_work_order(manager);
+	//if (Game.time % 10 == 0) {
+	//	creep.target = NONE;
+	//}
+	//if (creep.full()) {
+	//	creep.task = 'build';
+	//	creep.cache_index = creep.cached_path.length;
+	//} else if (creep.empty()) {
+	//	creep.task = 'gather';
+	//	creep.cache_index = creep.cached_path.length;
+	//}
+	//if (creep.task == 'build') {
+	//	let targ = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
+	//	if (targ) {
+	//		if (creep.build(targ) == ERR_NOT_IN_RANGE) {
+	//			creep.travelTo(targ);
+	//		}
+	//	}
+	//	let targ2 = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
+	//	if (targ2) {
+	//		creep.pickup(targ2);
+	//	}
+	//} else if (creep.task == 'gather') {
+	//	let targ = Game.getObjectById(creep.target);
+	//	if (!targ) {
+	//		let next_targ = _.last(_.sortBy(creep.room.find(FIND_DROPPED_RESOURCES), 'amount'));
+	//		if (next_targ) {
+	//			creep.target = next_targ.id;
+	//			targ = next_targ;
+	//		}
+	//	}
+	//	if (targ) {
+	//		if (creep.pickup(targ) == ERR_NOT_IN_RANGE) {
+	//			creep.travelTo(targ);
+	//		}
+	//	}
+	//	let targ2 = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
+	//	if (targ2) {
+	//		creep.build(targ2);
+	//	}
+	//}
 };
 
 StructureSpawn.prototype.tick_upgrader = function(creep) {
