@@ -19,6 +19,12 @@ Source.prototype.init = function() {
 	this.initialized = true;
 };
 
+Source.prototype.available_resources = function() {
+	let gross = _.sum(this.slots, 'energy_available');
+	let scheduled = _.sum(this.scheduled_withdraws, 'amount');
+	return gross - scheduled;
+};
+
 Source.prototype.assign_worker = function(harvester) {
 	let available_slot = _.findIndex(this.slots, 'assigned', NONE);
 	if (available_slot < 0) {
