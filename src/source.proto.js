@@ -1,7 +1,7 @@
 add_memory(Source.prototype, 'sources', source => source.id);
 memory_property(Source.prototype, 'initialized', false);
 memory_property(Source.prototype, 'slots', Array, true);
-memory_property(Source.prototype, 'scheduled_withdraws', Array, true);
+memory_property(Source.prototype, 'scheduled_withdraws', Object, true);
 
 Source.prototype.init = function() {
 	console.log("Initializing Source");
@@ -21,7 +21,7 @@ Source.prototype.init = function() {
 
 Source.prototype.available_resources = function() {
 	let gross = _.sum(this.slots, 'energy_available');
-	let scheduled = _.sum(this.scheduled_withdraws, 'amount');
+	let scheduled = _.sum(this.scheduled_withdraws);
 	return gross - scheduled;
 };
 
@@ -82,5 +82,15 @@ Source.prototype.tick = function(manager) {
 	});
 };
 
-Source.prototype.schedule_withdraw = function() {
+Source.prototype.schedule_withdraw = function(creep, amount) {
+	let available = this.available_resources();
+	if (available < amount) {
+		amount = available;
+	}
+	if (available > 0) {
+		this.schedule_withdraw[creep.name] = amount;
+		return amount;
+	} else {
+		return -1;
+	}
 };

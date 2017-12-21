@@ -50,6 +50,11 @@ Manager.prototype.initialize = function(room) {
 	this.initialized = true;
 };
 
+Manager.prototype.schedule_withdraw = function(creep, amount) {
+	let richest_source = _.sortByOrder(this.sources, [source => source.available_resources()], ['desc'])[0];
+	return richest_source.schedule_withdraw(creep, amount);
+};
+
 Manager.prototype.ticks_alive = function() {
 	return Game.time - this.start_tick;
 };
