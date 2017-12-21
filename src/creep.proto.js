@@ -5,6 +5,8 @@ memory_property(Creep.prototype, 'target', NONE);
 memory_property(Creep.prototype, 'work_order', Object, true);
 memory_property(Creep.prototype, 'move_status', true);
 memory_property(Creep.prototype, 'last_pos', Object, true);
+memory_property(Creep.prototype, 'cached_path', Array, true);
+memory_property(Creep.prototype, 'cache_index', 0);
 
 Creep.prototype.empty = function() {
 	return _.sum(this.carry) == 0;
@@ -35,22 +37,31 @@ Creep.prototype.travelToFunc = function(t, opts) {
 		}
 	);
 	if (ret.incomplete) {
-		return ERR_NO_PATH;
+		return [];
+	} else {
+		return ret.path;
 	}
-	this.room.visual.poly(ret.path, {stroke : 'aqua', lineStyle : 'dashed', strokeWidth : 0.5});
-	let pos = ret.path[0];
-	let err = this.move(this.pos.getDirectionTo(pos));
-	return err;
+};
+
+Creep.prototype.recache_path = function(t, ignore_creeps) {
+	let path = this.travelToFunc(t, {ignore_creeps : ignore_creeps});
+	this.room.visual.poly(path, {stroke : 'aqua', lineStyle : 'dashed', strokeWidth : 0.5, opacity : 0.3});
+	this.cached_path = path;
+	this.cache_index = 0;
 };
 
 Creep.prototype.travelTo = function(t) {
-	let err = OK;
-	if (this.move_status && this.last_pos.x == this.pos.x && this.last_pos.y == this.pos.y) {
-		err = this.travelToFunc(t, {ignore_creeps : false});
-	} else {
-		err = this.travelToFunc(t, {ignore_creeps : true});
+	if (this.cache_index >= this.cached_path.length) {
+		this.recache_path(t, true);
+	} else if (this.move_status && this.last_pos.x == this.pos.x && this.last_pos.y == this.pos.y) {
+		this.recache_path(t, false);
 	}
+	let cached_pos = this.cached_path[this.cache_index];
+	let room_pos = new RoomPosition(cached_pos.x, cached_pos.y, cached_pos.roomName);
+	let direction = this.pos.getDirectionTo(room_pos);
+	let err = this.move(direction);
 	if (err == OK) {
+		this.cache_index += 1;
 		this.move_status = true;
 	} else {
 		this.move_status = false;
