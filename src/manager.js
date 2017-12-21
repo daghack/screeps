@@ -51,8 +51,13 @@ Manager.prototype.initialize = function(room) {
 };
 
 Manager.prototype.schedule_withdraw = function(creep, amount) {
-	let richest_source = _.sortByOrder(this.sources, [source => source.available_resources()], ['desc'])[0];
-	return richest_source.schedule_withdraw(creep, amount);
+	let richest_source_id = _.sortByOrder(this.sources, [source_id => {
+		let source = Game.getObjectById(source_id);
+		return source.available_resources();
+	}], ['desc'])[0];
+	let richest_source = Game.getObjectById(richest_source_id);
+	amount = richest_source.schedule_withdraw(creep, amount);
+	return {source_id : richest_source_id, amount : amount};
 };
 
 Manager.prototype.ticks_alive = function() {
@@ -198,39 +203,43 @@ StructureSpawn.prototype.schedule_upgrader = function(manager) {
 	this.upgraders.number_requested += 1;
 };
 
-StructureSpawn.prototype.tick_hauler = function(creep) {
-	if (Game.time % 50 == 0) {
-		creep.target = NONE;
+StructureSpawn.prototype.tick_hauler = function(creep, manager) {
+	if (!creep.work_order.target) {
+		creep.work_order = {target : this.id, action : 'transfer_energy'};
 	}
-	if (creep.full()) {
-		creep.task = 'return';
-		creep.cache_index = creep.cached_path.length;
-	} else if (creep.empty()) {
-		creep.task = 'gather';
-		creep.cache_index = creep.cached_path.length;
-	}
-	if (creep.task == 'return') {
-		let err = creep.transfer(this, RESOURCE_ENERGY);
-		if (err == ERR_NOT_IN_RANGE) {
-			creep.travelTo(this);
-		} else if (err != OK) {
-			console.log("ERROR: " + err);
-		}
-	} else if (creep.task == 'gather') {
-		let targ = Game.getObjectById(creep.target);
-		if (!targ) {
-			let next_targ = _.last(_.sortBy(creep.room.find(FIND_DROPPED_RESOURCES), 'amount'));
-			if (next_targ) {
-				creep.target = next_targ.id;
-				targ = next_targ;
-			}
-		}
-		if (targ) {
-			if (creep.pickup(targ) == ERR_NOT_IN_RANGE) {
-				creep.travelTo(targ);
-			}
-		}
-	}
+	creep.perform_work_order(manager);
+	//if (Game.time % 50 == 0) {
+	//	creep.target = NONE;
+	//}
+	//if (creep.full()) {
+	//	creep.task = 'return';
+	//	creep.cache_index = creep.cached_path.length;
+	//} else if (creep.empty()) {
+	//	creep.task = 'gather';
+	//	creep.cache_index = creep.cached_path.length;
+	//}
+	//if (creep.task == 'return') {
+	//	let err = creep.transfer(this, RESOURCE_ENERGY);
+	//	if (err == ERR_NOT_IN_RANGE) {
+	//		creep.travelTo(this);
+	//	} else if (err != OK) {
+	//		console.log("ERROR: " + err);
+	//	}
+	//} else if (creep.task == 'gather') {
+	//	let targ = Game.getObjectById(creep.target);
+	//	if (!targ) {
+	//		let next_targ = _.last(_.sortBy(creep.room.find(FIND_DROPPED_RESOURCES), 'amount'));
+	//		if (next_targ) {
+	//			creep.target = next_targ.id;
+	//			targ = next_targ;
+	//		}
+	//	}
+	//	if (targ) {
+	//		if (creep.pickup(targ) == ERR_NOT_IN_RANGE) {
+	//			creep.travelTo(targ);
+	//		}
+	//	}
+	//}
 };
 
 StructureSpawn.prototype.tick_builder = function(creep) {
@@ -306,7 +315,7 @@ StructureSpawn.prototype.tick_creep_set = function(manager, set, tick_func_key, 
 			if (creep.spawning) {
 				return;
 			}
-			this[tick_func_key](creep);
+			this[tick_func_key](creep, manager);
 		} else {
 			toremove.push(worker_name);
 		}

@@ -3,6 +3,7 @@ memory_property(Creep.prototype, 'assigned_to', NONE);
 memory_property(Creep.prototype, 'task', NONE);
 memory_property(Creep.prototype, 'target', NONE);
 memory_property(Creep.prototype, 'work_order', Object, true);
+memory_property(Creep.prototype, 'scheduled_withdraw', Object, true);
 memory_property(Creep.prototype, 'move_status', true);
 memory_property(Creep.prototype, 'last_pos', Object, true);
 memory_property(Creep.prototype, 'cached_path', Array, true);
@@ -18,6 +19,9 @@ Creep.prototype.full = function() {
 
 Creep.prototype.travelToFunc = function(t, opts) {
 	let goal = {};
+	if (!t) {
+		return [];
+	}
 	if (t.pos) {
 		goal = {pos : t.pos, range : 1};
 	} else {
@@ -77,19 +81,46 @@ Creep.prototype.travelToTarget = function(opts) {
 	if (t) {
 		return this.travelTo(t);
 	} else {
-		return ERR_INVALID_TARGET;
+		return [];
 	}
 };
 
-Creep.prototype.perform_work_order = function() {
-	//If empty, go get energy.
-	if (this.work_order) {
-		let t = Game.getObjectById(this.work_order.target);
-		if (this.pos.isNearTo(t)) {
-			this[this.work_order.action](t);
+Creep.prototype.perform_work_order = function(manager) {
+	if (this.empty()) {
+		this.task = 'gather';
+		this.scheduled_withdraw = {};
+	}
+	if (this.task == 'gather') {
+		if (!this.scheduled_withdraw.source_id) {
+			this.scheduled_withdraw = manager.schedule_withdraw(this, this.carryCapacity);
+		}
+		let source = Game.getObjectById(this.scheduled_withdraw.source_id);
+		let highest_slot = _.sortByOrder(source.slots, ['energy_available'], ['desc'])[0];
+		let slot_room_pos = new RoomPosition(highest_slot.x, highest_slot.y, highest_slot.roomName);
+		if (this.pos.isNearTo(slot_room_pos)) {
+			let energy = slot_room_pos.lookFor(LOOK_ENERGY)[0];
+			this.pickup(energy);
 		} else {
-			this.travelTo(t);
+			this.travelTo(slot_room_pos);
+		}
+		let total_held = _.sum(this.carry);
+		if (this.scheduled_withdraw.amount >= total_held) {
+			this.task = 'perform';
 		}
 	} else {
+		if (this.work_order) {
+			let t = Game.getObjectById(this.work_order.target);
+			if (this.pos.isNearTo(t)) {
+				this[this.work_order.action](t);
+			} else {
+				this.travelTo(t);
+			}
+		} else {
+			//Default Action?
+		}
 	}
+};
+
+Creep.prototype.transfer_energy = function(spawn) {
+	return this.transfer(spawn, RESOURCE_ENERGY);
 };
