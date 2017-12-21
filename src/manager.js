@@ -199,8 +199,10 @@ StructureSpawn.prototype.tick_hauler = function(creep) {
 	}
 	if (creep.full()) {
 		creep.task = 'return';
+		creep.cache_index = creep.cached_path.length;
 	} else if (creep.empty()) {
 		creep.task = 'gather';
+		creep.cache_index = creep.cached_path.length;
 	}
 	if (creep.task == 'return') {
 		let err = creep.transfer(this, RESOURCE_ENERGY);
@@ -232,8 +234,10 @@ StructureSpawn.prototype.tick_builder = function(creep) {
 	}
 	if (creep.full()) {
 		creep.task = 'build';
+		creep.cache_index = creep.cached_path.length;
 	} else if (creep.empty()) {
 		creep.task = 'gather';
+		creep.cache_index = creep.cached_path.length;
 	}
 	if (creep.task == 'build') {
 		let targ = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
@@ -270,8 +274,10 @@ StructureSpawn.prototype.tick_builder = function(creep) {
 StructureSpawn.prototype.tick_upgrader = function(creep) {
 	if (creep.full()) {
 		creep.task = 'upgrade';
+		creep.cache_index = creep.cached_path.length;
 	} else if (creep.empty()) {
 		creep.task = 'gather';
+		creep.cache_index = creep.cached_path.length;
 	}
 	if (creep.task == 'upgrade') {
 		if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
