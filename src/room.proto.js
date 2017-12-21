@@ -31,6 +31,14 @@ Room.prototype.cost_matrix = function(ignore_creeps) {
 				cmatrix.set(struct.pos.x, struct.pos.y, 255);
 			}
 		});
+		this.find(FIND_CONSTRUCTION_SITES).forEach(function(struct) {
+			if (struct.structureType == STRUCTURE_ROAD) {
+				cmatrix.set(struct.pos.x, struct.pos.y, 1);
+			} else if (struct.structureType != STRUCTURE_CONTAINER &&
+				(struct.structureType != STRUCTURE_RAMPART || !struct.my)) {
+				cmatrix.set(struct.pos.x, struct.pos.y, 255);
+			}
+		});
 		_.forEach(this.sources(), source => {
 			_.forEach(source.slots, slot => {
 				cmatrix.set(slot.x, slot.y, 50);
