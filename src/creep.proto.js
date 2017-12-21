@@ -89,6 +89,26 @@ Creep.prototype.travelToTarget = function(opts) {
 	}
 };
 
+Creep.prototype.gather_energy = function(manager) {
+	if (!this.scheduled_withdraw.source_id) {
+		this.scheduled_withdraw = manager.schedule_withdraw(this, this.carryCapacity);
+	}
+	let source = Game.getObjectById(this.scheduled_withdraw.source_id);
+	let highest_slot = _.sortByOrder(source.slots, ['energy_available'], ['desc'])[0];
+	let slot_room_pos = new RoomPosition(highest_slot.x, highest_slot.y, highest_slot.roomName);
+	if (this.pos.isNearTo(slot_room_pos)) {
+		let energy = slot_room_pos.lookFor(LOOK_ENERGY)[0];
+		this.pickup(energy);
+	} else {
+		this.travelTo(slot_room_pos);
+	}
+	let total_held = _.sum(this.carry);
+	if (total_held >= this.scheduled_withdraw.amount) {
+		source.complete_withdraw(this);
+		this.task = 'perform';
+	}
+};
+
 Creep.prototype.perform_work_order = function(manager) {
 	if (this.empty() && (this.task == 'perform' || this.task == NONE)) {
 		this.task = 'gather';
@@ -96,23 +116,7 @@ Creep.prototype.perform_work_order = function(manager) {
 		this.invalidate_path_cache();
 	}
 	if (this.task == 'gather') {
-		if (!this.scheduled_withdraw.source_id) {
-			this.scheduled_withdraw = manager.schedule_withdraw(this, this.carryCapacity);
-		}
-		let source = Game.getObjectById(this.scheduled_withdraw.source_id);
-		let highest_slot = _.sortByOrder(source.slots, ['energy_available'], ['desc'])[0];
-		let slot_room_pos = new RoomPosition(highest_slot.x, highest_slot.y, highest_slot.roomName);
-		if (this.pos.isNearTo(slot_room_pos)) {
-			let energy = slot_room_pos.lookFor(LOOK_ENERGY)[0];
-			this.pickup(energy);
-		} else {
-			this.travelTo(slot_room_pos);
-		}
-		let total_held = _.sum(this.carry);
-		if (this.scheduled_withdraw.amount >= total_held) {
-			source.complete_withdraw(this);
-			this.task = 'perform';
-		}
+		this.gather_energy(manager);
 	} else {
 		if (this.work_order) {
 			let t = Game.getObjectById(this.work_order.target);
