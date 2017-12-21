@@ -206,40 +206,9 @@ StructureSpawn.prototype.schedule_upgrader = function(manager) {
 StructureSpawn.prototype.tick_hauler = function(creep, manager) {
 	if (!creep.work_order.target) {
 		creep.work_order = {target : this.id, action : 'transfer_energy'};
+		creep.invalidate_path_cache();
 	}
 	creep.perform_work_order(manager);
-	//if (Game.time % 50 == 0) {
-	//	creep.target = NONE;
-	//}
-	//if (creep.full()) {
-	//	creep.task = 'return';
-	//	creep.cache_index = creep.cached_path.length;
-	//} else if (creep.empty()) {
-	//	creep.task = 'gather';
-	//	creep.cache_index = creep.cached_path.length;
-	//}
-	//if (creep.task == 'return') {
-	//	let err = creep.transfer(this, RESOURCE_ENERGY);
-	//	if (err == ERR_NOT_IN_RANGE) {
-	//		creep.travelTo(this);
-	//	} else if (err != OK) {
-	//		console.log("ERROR: " + err);
-	//	}
-	//} else if (creep.task == 'gather') {
-	//	let targ = Game.getObjectById(creep.target);
-	//	if (!targ) {
-	//		let next_targ = _.last(_.sortBy(creep.room.find(FIND_DROPPED_RESOURCES), 'amount'));
-	//		if (next_targ) {
-	//			creep.target = next_targ.id;
-	//			targ = next_targ;
-	//		}
-	//	}
-	//	if (targ) {
-	//		if (creep.pickup(targ) == ERR_NOT_IN_RANGE) {
-	//			creep.travelTo(targ);
-	//		}
-	//	}
-	//}
 };
 
 StructureSpawn.prototype.tick_builder = function(creep, manager) {
@@ -254,48 +223,9 @@ StructureSpawn.prototype.tick_builder = function(creep, manager) {
 		} else {
 			//Repair shit?
 		}
+		creep.invalidate_path_cache();
 	}
 	creep.perform_work_order(manager);
-	//if (Game.time % 10 == 0) {
-	//	creep.target = NONE;
-	//}
-	//if (creep.full()) {
-	//	creep.task = 'build';
-	//	creep.cache_index = creep.cached_path.length;
-	//} else if (creep.empty()) {
-	//	creep.task = 'gather';
-	//	creep.cache_index = creep.cached_path.length;
-	//}
-	//if (creep.task == 'build') {
-	//	let targ = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
-	//	if (targ) {
-	//		if (creep.build(targ) == ERR_NOT_IN_RANGE) {
-	//			creep.travelTo(targ);
-	//		}
-	//	}
-	//	let targ2 = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
-	//	if (targ2) {
-	//		creep.pickup(targ2);
-	//	}
-	//} else if (creep.task == 'gather') {
-	//	let targ = Game.getObjectById(creep.target);
-	//	if (!targ) {
-	//		let next_targ = _.last(_.sortBy(creep.room.find(FIND_DROPPED_RESOURCES), 'amount'));
-	//		if (next_targ) {
-	//			creep.target = next_targ.id;
-	//			targ = next_targ;
-	//		}
-	//	}
-	//	if (targ) {
-	//		if (creep.pickup(targ) == ERR_NOT_IN_RANGE) {
-	//			creep.travelTo(targ);
-	//		}
-	//	}
-	//	let targ2 = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
-	//	if (targ2) {
-	//		creep.build(targ2);
-	//	}
-	//}
 };
 
 StructureSpawn.prototype.tick_upgrader = function(creep) {

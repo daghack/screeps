@@ -53,6 +53,10 @@ Creep.prototype.recache_path = function(t, ignore_creeps) {
 	this.cache_index = 0;
 };
 
+Creep.prototype.invalidate_path_cache = function() {
+	this.cache_index = this.cached_path.length;
+};
+
 Creep.prototype.travelTo = function(t) {
 	if (this.move_status && this.last_pos.x == this.pos.x && this.last_pos.y == this.pos.y) {
 		this.recache_path(t, false);
@@ -89,6 +93,7 @@ Creep.prototype.perform_work_order = function(manager) {
 	if (this.empty() && this.task == 'perform') {
 		this.task = 'gather';
 		this.scheduled_withdraw = {};
+		this.invalidate_path_cache();
 	}
 	if (this.task == 'gather') {
 		if (!this.scheduled_withdraw.source_id) {
