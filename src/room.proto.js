@@ -37,12 +37,10 @@ Room.prototype.cost_matrix = function(ignore_creeps) {
 			});
 		});
 		let cmatrix_creeps = cmatrix.clone();
-		if (!ignore_creeps) {
-			let room_creeps = this.find(FIND_CREEPS);
-			_.forEach(room_creeps, creep => {
-				cmatrix_creeps.set(creep.pos.x, creep.pos.y, 50);
-			});
-		}
+		let room_creeps = this.find(FIND_CREEPS);
+		_.forEach(room_creeps, creep => {
+			cmatrix_creeps.set(creep.pos.x, creep.pos.y, 50);
+		});
 		this._cost_matrix = cmatrix;
 		this._cost_matrix_creeps = cmatrix_creeps;
 	}
