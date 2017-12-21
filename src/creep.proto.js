@@ -50,10 +50,10 @@ Creep.prototype.recache_path = function(t, ignore_creeps) {
 };
 
 Creep.prototype.travelTo = function(t) {
-	if (this.cache_index >= this.cached_path.length) {
-		this.recache_path(t, true);
-	} else if (this.move_status && this.last_pos.x == this.pos.x && this.last_pos.y == this.pos.y) {
+	if (this.move_status && this.last_pos.x == this.pos.x && this.last_pos.y == this.pos.y) {
 		this.recache_path(t, false);
+	} else if (this.cache_index >= this.cached_path.length) {
+		this.recache_path(t, true);
 	}
 	this.room.visual.poly(this.cached_path.slice(this.cache_index),
 		{stroke : 'aqua', lineStyle : 'dashed', strokeWidth : 0.5, opacity : 0.3}
