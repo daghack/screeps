@@ -105,6 +105,7 @@ Creep.prototype.perform_work_order = function(manager) {
 		}
 		let total_held = _.sum(this.carry);
 		if (this.scheduled_withdraw.amount >= total_held) {
+			source.complete_withdraw(this);
 			this.task = 'perform';
 		}
 	} else {

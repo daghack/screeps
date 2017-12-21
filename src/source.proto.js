@@ -94,3 +94,7 @@ Source.prototype.schedule_withdraw = function(creep, amount) {
 		return -1;
 	}
 };
+
+Source.prototype.complete_withdraw = function(creep) {
+	delete this.scheduled_withdraws[creep.name];
+};
