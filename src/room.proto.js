@@ -31,13 +31,11 @@ Room.prototype.cost_matrix = function(ignore_creeps) {
 				cmatrix.set(struct.pos.x, struct.pos.y, 255);
 			}
 		});
-		if (path_around_creeps) {
-			_.forEach(this.sources(), source => {
-				_.forEach(source.slots, slot => {
-					cmatrix.set(slot.x, slot.y, 10);
-				});
+		_.forEach(this.sources(), source => {
+			_.forEach(source.slots, slot => {
+				cmatrix.set(slot.x, slot.y, 50);
 			});
-		}
+		});
 		let cmatrix_creeps = cmatrix.clone();
 		if (!ignore_creeps) {
 			let room_creeps = this.find(FIND_CREEPS);
