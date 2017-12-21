@@ -228,26 +228,31 @@ StructureSpawn.prototype.tick_builder = function(creep, manager) {
 	creep.perform_work_order(manager);
 };
 
-StructureSpawn.prototype.tick_upgrader = function(creep) {
-	if (creep.full()) {
-		creep.task = 'upgrade';
-		creep.cache_index = creep.cached_path.length;
-	} else if (creep.empty()) {
-		creep.task = 'gather';
-		creep.cache_index = creep.cached_path.length;
+StructureSpawn.prototype.tick_upgrader = function(creep, manager) {
+	if (!creep.work_order.target) {
+		creep.work_order = {target : creep.room.controller.id, action : 'upgradeController'};
+		creep.invalidate_path_cache();
 	}
-	if (creep.task == 'upgrade') {
-		if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
-			creep.travelTo(creep.room.controller);
-		}
-	} else if (creep.task == 'gather') {
-		let targ = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
-		if (targ) {
-			if (creep.pickup(targ) == ERR_NOT_IN_RANGE) {
-				creep.travelTo(targ);
-			}
-		}
-	}
+	creep.perform_work_order(manager);
+	//if (creep.full()) {
+	//	creep.task = 'upgrade';
+	//	creep.cache_index = creep.cached_path.length;
+	//} else if (creep.empty()) {
+	//	creep.task = 'gather';
+	//	creep.cache_index = creep.cached_path.length;
+	//}
+	//if (creep.task == 'upgrade') {
+	//	if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
+	//		creep.travelTo(creep.room.controller);
+	//	}
+	//} else if (creep.task == 'gather') {
+	//	let targ = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
+	//	if (targ) {
+	//		if (creep.pickup(targ) == ERR_NOT_IN_RANGE) {
+	//			creep.travelTo(targ);
+	//		}
+	//	}
+	//}
 };
 
 StructureSpawn.prototype.tick_creep_set = function(manager, set, tick_func_key, count, schedule_func_key) {
