@@ -243,7 +243,11 @@ StructureSpawn.prototype.tick_hauler = function(creep, manager) {
 };
 
 StructureSpawn.prototype.tick_builder = function(creep, manager) {
-	if (!creep.work_order.target) {
+	let retarget = false;
+	if (!creep.work_order.target || !Game.getObjectById(creep.work_order.target)) {
+		retarget = true;
+	}
+	if (retarget) {
 		let closest_site = this.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
 		if (closest_site) {
 			creep.work_order = {target : closest_site.id, action : 'build'};
