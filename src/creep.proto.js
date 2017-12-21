@@ -45,7 +45,6 @@ Creep.prototype.travelToFunc = function(t, opts) {
 
 Creep.prototype.recache_path = function(t, ignore_creeps) {
 	let path = this.travelToFunc(t, {ignore_creeps : ignore_creeps});
-	this.room.visual.poly(path, {stroke : 'aqua', lineStyle : 'dashed', strokeWidth : 0.5, opacity : 0.3});
 	this.cached_path = path;
 	this.cache_index = 0;
 };
@@ -56,6 +55,9 @@ Creep.prototype.travelTo = function(t) {
 	} else if (this.move_status && this.last_pos.x == this.pos.x && this.last_pos.y == this.pos.y) {
 		this.recache_path(t, false);
 	}
+	this.room.visual.poly(this.cached_path.slice(this.cache_index),
+		{stroke : 'aqua', lineStyle : 'dashed', strokeWidth : 0.5, opacity : 0.3}
+	);
 	let cached_pos = this.cached_path[this.cache_index];
 	let room_pos = new RoomPosition(cached_pos.x, cached_pos.y, cached_pos.roomName);
 	let direction = this.pos.getDirectionTo(room_pos);
