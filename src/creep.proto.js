@@ -90,7 +90,7 @@ Creep.prototype.travelToTarget = function(opts) {
 };
 
 Creep.prototype.perform_work_order = function(manager) {
-	if (this.empty() && this.task == 'perform') {
+	if (this.empty() && (this.task == 'perform' || this.task == NONE)) {
 		this.task = 'gather';
 		this.scheduled_withdraw = {};
 		this.invalidate_path_cache();
