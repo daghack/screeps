@@ -15,4 +15,5 @@ module.exports.loop = function() {
 		restart_memory();
 	}
 	overlord.tick();
+	_.each(Game.spawns, overlord.register_spawn);
 };
