@@ -9,7 +9,8 @@ function initialize_overlord() {
 	Memory.overlord = {};
 };
 
-Overlord.tick = function() {
+Overlord.prototype.tick = function() {
+	console.log("Overlord Tick");
 };
 
 module.exports = Overlord;
