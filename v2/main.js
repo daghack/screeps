@@ -1,8 +1,8 @@
 require('manager');
 
 function restart_memory() {
-	Memory = _.mapObject(Memory, function(val, key) {
-		return {};
+	Memory = _.forEach(Memory, function(val, key, mem) {
+		return mem[key] = {};
 	});
 };
 
