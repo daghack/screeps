@@ -1,4 +1,4 @@
-require('overlord');
+var Overlord = require('overlord');
 
 function restart_memory() {
 	Memory = _.forEach(Memory, function(val, key, mem) {

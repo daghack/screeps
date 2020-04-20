@@ -12,6 +12,4 @@ function initialize_overlord() {
 Overlord.tick = function() {
 };
 
-module.exports = {
-	Overlord: Overlord
-};
+module.exports = Overlord;
