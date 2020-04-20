@@ -8,7 +8,7 @@ function restart_memory() {
 	Memory.restart_memory = false;
 };
 
-overlord = new Overlord();
+var overlord = new Overlord();
 
 module.exports.loop = function() {
 	if (Memory.restart_memory) {
