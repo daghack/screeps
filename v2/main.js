@@ -1,6 +1,7 @@
 var Overlord = require('overlord');
 
 function restart_memory() {
+	console.log("MEMORY RESTARTED");
 	Memory = _.forEach(Memory, function(val, key, mem) {
 		return mem[key] = {};
 	});
