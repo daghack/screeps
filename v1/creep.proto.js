@@ -64,7 +64,7 @@ Creep.prototype.travelTo = function(t) {
 		this.recache_path(t, true);
 	}
 	this.room.visual.poly(this.cached_path.slice(this.cache_index),
-		{stroke : 'aqua', lineStyle : 'dashed', strokeWidth : 0.5, opacity : 0.3}
+		{stroke : 'aqua', lineStyle : 'dashed', strokeWidth : 0.3, opacity : 0.2}
 	);
 	let cached_pos = this.cached_path[this.cache_index];
 	let room_pos = new RoomPosition(cached_pos.x, cached_pos.y, cached_pos.roomName);
