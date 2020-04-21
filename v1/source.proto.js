@@ -47,7 +47,7 @@ Source.prototype.gather_from_position = function(creep, room_pos) {
 	}
 };
 
-Source.prototype.pickup_energy_at = function(creep) {
+Source.prototype.pickup_energy = function(creep) {
 	let highest_slot = _.sortByOrder(this.slots, ['energy_available'], ['desc'])[0];
 	let slot_pos = new RoomPosition(highest_slot.x, highest_slot.y, highest_slot.roomName);
 

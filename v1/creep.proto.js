@@ -95,14 +95,13 @@ Creep.prototype.gather_energy = function(manager) {
 	}
 
 	let source = Game.getObjectById(this.scheduled_withdraw.source_id);
+	source.pickup_energy(this);
 	let withdraw_amount = this.scheduled_withdraw.amount;
 	let available = this.store.getFreeCapacity(RESOURCE_ENERGY);
 	let needed = withdraw_amount - available;
 	if (needed <= 0) {
 		this.task = 'perform';
 		source.complete_withdraw(this);
-	} else {
-		source.pickup_energy(this);
 	}
 };
 
