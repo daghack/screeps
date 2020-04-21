@@ -38,7 +38,8 @@ Source.prototype.gather_from_position = function(creep, room_pos) {
 		return;
 	}
 
-	let container = room_pos.lookFor(LOOK_STRUCTURES, {filter: {'structureType': STRUCTURE_CONTAINER}});
+	let container = room_pos.lookFor(LOOK_STRUCTURES);
+	container = _.filter(container, {filter: {'structureType': STRUCTURE_CONTAINER}});
 	if (container.length > 0) {
 		let stored = container.store.getUsedCapacity(RESOURCE_ENERGY);
 		let to_withdraw = _.min([stored, needed]);
@@ -91,9 +92,10 @@ Source.prototype.schedule_harvester = function(manager, slot) {
 };
 
 Source.prototype.add_slot_build_orders = function(manager, room_pos) {
-	let toremove = room_pos.lookFor(LOOK_CONSTRUCTION_SITES, {filter: a => a.structureType != STRUCTURE_CONTAINER});
-	_.forEach(toremove, constr => constr.remove());
-	let constr = room_pos.lookFor(LOOK_CONSTRUCTION_SITES, {filter: {'structureType': STRUCTURE_CONTAINER}});
+	let toremove = room_pos.lookFor(LOOK_CONSTRUCTION_SITES);
+	toremove = _.filter(toremove, {filter: a => a.structureType != STRUCTURE_CONTAINER});
+	let constr = room_pos.lookFor(LOOK_CONSTRUCTION_SITES);
+	constr = _.filter(constr, {filter: {'structureType': STRUCTURE_CONTAINER}});
 	if (constr.length == 0) {
 		manager.schedule_build(this.room, STRUCTURE_CONTAINER, room_pos, true);
 	}
