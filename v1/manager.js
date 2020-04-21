@@ -77,13 +77,17 @@ Manager.prototype.critical_build_set = function() {
 	return  _.filter(this.buildset, nrw);
 };
 
-Manager.prototype.create_construction = function(build_order, key) {
+Manager.prototype.create_construction = function(build_order, key, critical) {
 	let room = Game.rooms[build_order.room];
 	if (room.createConstructionSite(build_order.x, build_order.y, build_order.struct) == OK) {
 		return key;
 	} else {
+		let color = 'white';
+		if (critical) {
+			color = 'red';
+		}
 		room.visual.circle(build_order,
-			{fill : 'transparent', lineStyle : 'dashed', radius : 0.4, stroke : 'white'}
+			{fill : 'transparent', lineStyle : 'dashed', radius : 0.4, stroke : color}
 		);
 	}
 };
@@ -97,7 +101,7 @@ Manager.prototype.tick = function() {
 	let todel = [];
 	let critical = this.critical_build_set();
 	_.forEach(critical, (build_order, key) => {
-		let k = this.create_construction(build_order, key);
+		let k = this.create_construction(build_order, key, true);
 		if (k) {
 			todel.push(k)
 		}
