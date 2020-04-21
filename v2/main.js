@@ -1,3 +1,7 @@
+require('proto');
+require('room.proto');
+require('creep.proto');
+require('source.proto');
 var r = require('msg_receiver');
 
 class SpawnerReceiver extends r.Receiver {
@@ -27,6 +31,24 @@ class SpawnerReceiver extends r.Receiver {
 			default:
 		}
 		return false;
+	}
+};
+
+class WorkerReceiver extends r.Receiver {
+	constructor(creep) {
+		super(["work"]);
+		this.worker = creep;
+	}
+
+	handle_msg(label, msg) {
+		if (this.worker.spawning || this.worker.memory.order) {
+			return false;
+		}
+		this.worker.memory.order = msg.order;
+		this.worker.memory.target = msg.target;
+	}
+
+	tick() {
 	}
 };
 
