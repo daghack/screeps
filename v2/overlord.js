@@ -1,5 +1,6 @@
 class Overlord {
 	constructor() {
+		self = this;
 		if (!Memory.overlord) {
 			console.log("Initializing Overlord");
 			Memory.overlord = {
@@ -15,7 +16,7 @@ class Overlord {
 			if (!spawn) {
 				return true;
 			}
-			this.run_spawn(spawn);
+			self.run_spawn(spawn);
 			return false;
 		});
 	}
@@ -28,7 +29,7 @@ class Overlord {
 	}
 
 	register_spawn(spawn, id) {
-		if (this.is_spawn_registered(id)) {
+		if (self.is_spawn_registered(id)) {
 			console.log("Registering Spawn: " + id);
 			Memory.overlord.registered_spawns.push(id);
 		}
@@ -43,7 +44,7 @@ class Overlord {
 	register_structure(structure, id) {
 		switch(structure.structureType) {
 			case STRUCTURE_SPAWN:
-				this.register_spawn(structure, id);
+				self.register_spawn(structure, id);
 				break;
 			default:
 				break;
