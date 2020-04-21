@@ -5,6 +5,8 @@ class Overlord {
 			console.log("Initializing Overlord");
 			Memory.overlord = {
 				registered_spawns: [],
+				registered_creeps: [],
+				registered_flags: [],
 			};
 		}
 	}
