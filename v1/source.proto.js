@@ -11,7 +11,7 @@ function energy_available_at(room_pos) {
 	return 0;
 }
 
-Source.prototype.init = function() {
+Source.prototype.init = function(manager) {
 	console.log("Initializing Source");
 	if (this.initialized) {
 		return;
