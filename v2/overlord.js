@@ -7,6 +7,7 @@ class Overlord {
 			};
 		}
 	}
+
 	tick() {
 		console.log("Overlord Tick");
 		_.remove(Memory.overlord.registered_spawns, function(id) {

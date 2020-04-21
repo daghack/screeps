@@ -16,7 +16,7 @@ module.exports.loop = function() {
 	if (Memory.restart_memory) {
 		restart_memory();
 	}
-	var overlord = new ov.Overlord();
+	let overlord = new ov.Overlord();
 	_.each(Game.structures, overlord.register_structure);
 	_.each(Game.creeps, overlord.register_creep);
 	_.each(Game.flags, overlord.register_flag);
