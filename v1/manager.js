@@ -16,12 +16,17 @@ Manager.prototype.initialize = function(room) {
 	}
 	console.log("Initializing Manager");
 	let sources = room.find(FIND_SOURCES);
+	let controller = room.controller;
 	_.forEach(sources, source => {
 		source.init(this);
 		this.sources.push(source.id);
-		let cpath = source.pos.findPathTo(room.controller, {ignoreCreeps : true, ignoreRoads : true});
+		let cpath = source.pos.findPathTo(controller, {ignoreCreeps : true, ignoreRoads : true});
 		_.forEach(cpath, pos => {
-			this.schedule_build(room, STRUCTURE_ROAD, pos);
+			if (pos.x != source.pos.x && pos.y != source.pos.y) {
+				if (pos.x != controller.pos.x && pos.y != controller.pos.y) {
+					this.schedule_build(room, STRUCTURE_ROAD, pos);
+				}
+			}
 		});
 	});
 	_.forEach(Game.spawns, spawner => {
@@ -29,6 +34,7 @@ Manager.prototype.initialize = function(room) {
 	});
 	sources[0].schedule_harvester(this);
 	_.forEach(Game.spawns, spawner => {
+		contoller = spawner.room.controller;
 		spawner.haulers = {number_requested : 0, names : []};
 		spawner.builders = {number_requested : 0, names : []};
 		spawner.upgraders = {number_requested : 0, names : []};
@@ -38,12 +44,16 @@ Manager.prototype.initialize = function(room) {
 		_.forEach(sources, source => {
 			let spath = spawner.pos.findPathTo(source, {ignoreCreeps : true, ignoreRoads : true});
 			_.forEach(spath, pos => {
-				this.schedule_build(spawner.room, STRUCTURE_ROAD, pos);
+				if (pos.x != source.pos.x && pos.y != source.pos.y) {
+					this.schedule_build(spawner.room, STRUCTURE_ROAD, pos);
+				}
 			});
 		});
-		let cpath = spawner.pos.findPathTo(spawner.room.controller, {ignoreCreeps : true, ignoreRoads : true});
+		let cpath = spawner.pos.findPathTo(controller, {ignoreCreeps : true, ignoreRoads : true});
 		_.forEach(cpath, pos => {
-			this.schedule_build(spawner.room, STRUCTURE_ROAD, pos);
+			if (pos.x != controller.pos.x && pos.y != controller.pos.y) {
+				this.schedule_build(spawner.room, STRUCTURE_ROAD, pos);
+			}
 		});
 	});
 	this.start_tick = Game.time;
