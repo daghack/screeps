@@ -73,7 +73,7 @@ Manager.prototype.schedule_build = function(room, struct, poslike, overwrite) {
 };
 
 Manager.prototype.critical_build_set = function() {
-	let nrw = site => site.structureType != STRUCTURE_WALL && site.structureType != STRUCTURE_ROAD;
+	let nrw = site => site.struct != STRUCTURE_WALL && site.struct != STRUCTURE_ROAD;
 	return  _.filter(this.buildset, nrw);
 };
 
@@ -90,6 +90,7 @@ Manager.prototype.create_construction = function(build_order, key, critical) {
 			{fill : 'transparent', lineStyle : 'dashed', radius : 0.4, stroke : color}
 		);
 	}
+	return null;
 };
 
 Manager.prototype.tick = function() {
@@ -121,10 +122,12 @@ Manager.prototype.tick = function() {
 		let source = Game.getObjectById(source_id);
 		source.tick(this);
 	});
+
 	_.forEach(this.spawners, spawner_name => {
 		let spawn = Game.spawns[spawner_name];
 		spawn.tick(this);
 	});
+	this.buildset = this.buildset;
 };
 
 Manager.prototype.schedule_creep = function(name, body, opts, body2) {
