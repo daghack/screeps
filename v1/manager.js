@@ -73,7 +73,7 @@ Manager.prototype.schedule_build = function(room, struct, poslike, overwrite) {
 };
 
 Manager.prototype.critical_build_set = function() {
-	let nrw = site => site.structureType != STRUCTURE_ROAD && site.structureType != STRUCTURE_ROAD;
+	let nrw = site => site.structureType != STRUCTURE_WALL && site.structureType != STRUCTURE_ROAD;
 	return  _.filter(this.buildset, nrw);
 };
 
