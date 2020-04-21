@@ -211,17 +211,35 @@ StructureSpawn.prototype.tick_hauler = function(creep, manager) {
 	creep.perform_work_order(manager);
 };
 
+function findClosestCritical(pos) {
+	let nrw = obj => obj.structureType != STRUCTURE_ROAD && obj.structureType != STRUCTURE_WALL;
+	return pos.findClosestByRange(FIND_CONSTRUCTION_SITES, {filter: nrw});
+}
+
+function findClosestNonCritical(pos) {
+	return pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
+}
+
 StructureSpawn.prototype.tick_builder = function(creep, manager) {
 	let retarget = false;
 	if (!creep.work_order.target || !Game.getObjectById(creep.work_order.target)) {
 		retarget = true;
 	}
 	if (retarget) {
-		let closest_site = this.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
-		if (closest_site) {
-			creep.work_order = {target : closest_site.id, action : 'build'};
+		let build_target = null;
+		let closest_critical = findClosestCritical(this.pos);
+		if (closest_critical) {
+			build_target = closest_critical;
 		} else {
-			//Repair shit?
+			let closest_noncritical = findClosestNonCritical(this.pos);
+			if (closest_noncritical) {
+				build_target = closest_noncritical;
+			}
+		}
+		if (build_target) {
+			creep.work_order = {target : build_target.id, action : 'build'};
+		} else {
+			// Repair???
 		}
 		creep.invalidate_path_cache();
 	}
