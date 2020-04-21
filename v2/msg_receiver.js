@@ -7,7 +7,7 @@ class Receiver {
 		return _.has(this.msg_box, label);
 	}
 
-	send_msg(label, msg) {
+	handle_msg(label, msg) {
 		console.log(`Received '${label}' event.`);
 	}
 
@@ -33,14 +33,14 @@ class ParentReceiver {
 	broadcast(label, msg) {
 		// Send to all receivers, regardless of whether or not they ack.
 		_.forEach(this.registered_receivers[label], function(receiver) {
-			receiver.send_msg(label, msg);
+			receiver.handle_msg(label, msg);
 		});
 	}
 
 	send(label, msg) {
 		// Send to all receivers until it is acked.
 		_.find(this.registered_receivers[label], function(receiver) {
-			receiver.send_msg(label, msg);
+			receiver.handle_msg(label, msg);
 		});
 		// #TODO - Save event if nobody was able to handle it.
 	}
