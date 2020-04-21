@@ -91,6 +91,8 @@ Source.prototype.schedule_harvester = function(manager, slot) {
 };
 
 Source.prototype.add_slot_build_orders = function(manager, room_pos) {
+	let toremove = room_pos.lookFor(FIND_CONSTRUCTION_SITES, {filter: a => a.structureType != STRUCTURE_CONTAINER});
+	_.forEach(toremove, constr => constr.remove());
 	let constr = room_pos.lookFor(FIND_CONSTRUCTION_SITES, {filter: {'structureType': STRUCTURE_CONTAINER}});
 	if (constr.length == 0) {
 		manager.schedule_build(this.room, STRUCTURE_CONTAINER, room_pos, true);
