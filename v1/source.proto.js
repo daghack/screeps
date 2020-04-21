@@ -19,6 +19,7 @@ Source.prototype.init = function() {
 	let slots = this.room.adjacent_nonwall(this.pos);
 	_.forEach(slots, slot => {
 		let room_pos = new RoomPosition(slot.x, slot.y, this.room.name);
+		this.add_slot_build_orders(manager, room_pos);
 		room_pos.assigned = NONE;
 		room_pos.requested = false;
 		room_pos.energy_available = 0;
@@ -106,7 +107,6 @@ Source.prototype.tick = function(manager) {
 	console.log("Source " + this.id + " Tick");
 	_.forEach(this.slots, slot => {
 		let room_pos = new RoomPosition(slot.x, slot.y, this.room.name);
-		this.add_slot_build_orders(manager, room_pos);
 		slot.energy_available = energy_available_at(room_pos);
 		if (slot.assigned != NONE && !Game.creeps[slot.assigned]) {
 			slot.assigned = NONE;
