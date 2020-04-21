@@ -72,6 +72,22 @@ Manager.prototype.schedule_build = function(room, struct, poslike, overwrite) {
 	}
 };
 
+Manager.prototype.critical_build_set = function() {
+	let nrw = site => site.structureType != STRUCTURE_ROAD && site.structureType != STRUCTURE_ROAD;
+	return  _.filter(this.buildset, nrw);
+};
+
+Manager.prototype.create_construction = function(build_order, key) {
+	let room = Game.rooms[build_order.room];
+	if (room.createConstructionSite(build_order.x, build_order.y, build_order.struct) == OK) {
+		return key;
+	} else {
+		room.visual.circle(build_order,
+			{fill : 'transparent', lineStyle : 'dashed', radius : 0.4, stroke : 'white'}
+		);
+	}
+};
+
 Manager.prototype.tick = function() {
 	console.log("Manager Tick");
 	if (Game.time % this.update_interval == 0) {
@@ -79,14 +95,20 @@ Manager.prototype.tick = function() {
 	}
 
 	let todel = [];
+	let critical = this.critical_build_set();
+	_.forEach(critical, (build_order, key) => {
+		let k = this.create_construction(build_order, key);
+		if (k) {
+			todel.push(k)
+		}
+	});
+	_.forEach(todel, key => delete this.buildset[key]);
+
+	todel = [];
 	_.forEach(this.buildset, (build_order, key) => {
-		let room = Game.rooms[build_order.room];
-		if (room.createConstructionSite(build_order.x, build_order.y, build_order.struct) == OK) {
-			todel.push(key);
-		} else {
-			room.visual.circle(build_order,
-				{fill : 'transparent', lineStyle : 'dashed', radius : 0.4, stroke : 'white'}
-			);
+		let k = this.create_construction(build_order, key);
+		if (k) {
+			todel.push(k)
 		}
 	});
 	_.forEach(todel, key => delete this.buildset[key]);
