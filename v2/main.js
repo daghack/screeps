@@ -7,6 +7,10 @@ function restart_memory() {
 	});
 	delete Memory.overlord;
 	Memory.restart_memory = false;
+	overlord = new Overlord();
+};
+
+function clean_memory() {
 };
 
 var overlord = new Overlord();
