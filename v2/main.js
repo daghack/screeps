@@ -1,4 +1,4 @@
-var Overlord = require('overlord');
+var ov = require('overlord');
 
 function restart_memory() {
 	console.log("MEMORY RESTARTED");
@@ -13,13 +13,13 @@ function restart_memory() {
 function clean_memory() {
 };
 
-var overlord = new Overlord();
+var overlord = new ov.Overlord();
 
 module.exports.loop = function() {
 	if (Memory.restart_memory) {
 		restart_memory();
 	}
-	_.each(Game.structures, overlord.register_spawn);
+	_.each(Game.structures, overlord.register_structure);
 	_.each(Game.creeps, overlord.register_creep);
 	_.each(Game.flags, overlord.register_flag);
 	overlord.tick();

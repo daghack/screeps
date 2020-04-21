@@ -53,4 +53,4 @@ Overlord.prototype.register_structure = function(structure, id) {
 	}
 };
 
-module.exports = Overlord;
+module.exports = {"Overlord": Overlord};
