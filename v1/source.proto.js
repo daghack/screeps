@@ -3,6 +3,14 @@ memory_property(Source.prototype, 'initialized', false);
 memory_property(Source.prototype, 'slots', Array, true);
 memory_property(Source.prototype, 'scheduled_withdraws', Object, true);
 
+function energy_available_at(room_pos) {
+	let resources = room_pos.lookFor(LOOK_ENERGY);
+	if (resources.length > 0) {
+		return resources[0].amount;
+	}
+	return 0;
+}
+
 Source.prototype.init = function() {
 	console.log("Initializing Source");
 	if (this.initialized) {
@@ -56,12 +64,7 @@ Source.prototype.tick = function(manager) {
 	console.log("Source " + this.id + " Tick");
 	_.forEach(this.slots, slot => {
 		let room_pos = new RoomPosition(slot.x, slot.y, this.room.name);
-		let resources = this.room.lookForAt(LOOK_ENERGY, room_pos);
-		if (resources.length > 0) {
-			slot.energy_available = resources[0].amount;
-		} else {
-			slot.energy_available = 0;
-		}
+		slot.energy_available = energy_available_at(room_pos);
 		if (slot.assigned != NONE && !Game.creeps[slot.assigned]) {
 			slot.assigned = NONE;
 		}
