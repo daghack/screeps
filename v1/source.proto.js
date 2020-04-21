@@ -27,14 +27,10 @@ Source.prototype.init = function() {
 	this.initialized = true;
 };
 
-Source.prototype.pickup_energy_at(creep, source, room_pos) {
-	let withdraw_amount = creep.schedule_withdraw.amount;
+Source.prototype.gather_from_position = function(creep, room_pos) {
+	let withdraw_amount = creep.scheduled_withdraw.amount;
 	let available = creep.store.getFreeCapacity(RESOURCE_ENERGY);
 	let needed = withdraw_amount - available;
-	if (needed <= 0) {
-		creep.task = 'perform';
-		source.complete_withdraw(creep);
-	}
 
 	let dropped_energy = room_pos.lookFor(LOOK_ENERGY);
 	if (dropped_energy.length > 0) {
@@ -49,7 +45,18 @@ Source.prototype.pickup_energy_at(creep, source, room_pos) {
 		let to_withdraw = _.min([stored, needed]);
 		creep.withdraw(container[0], RESOURCE_ENERGY, to_withdraw);
 	}
-}
+};
+
+Source.prototype.pickup_energy_at = function(creep) {
+	let highest_slot = _.sortByOrder(this.slots, ['energy_available'], ['desc'])[0];
+	let slot_pos = new RoomPosition(highest_slot.x, highest_slot.y, highest_slot.roomName);
+
+	if (creep.pos.isNearTo(slot_pos)) {
+		this.gather_from_position(creep, slot_pos);
+	} else {
+		creep.travelTo(slot_pos);
+	}
+};
 
 Source.prototype.available_resources = function() {
 	let gross = _.sum(this.slots, 'energy_available');
