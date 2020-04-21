@@ -93,19 +93,24 @@ Creep.prototype.gather_energy = function(manager) {
 	if (!this.scheduled_withdraw.source_id) {
 		this.scheduled_withdraw = manager.schedule_withdraw(this, this.carryCapacity);
 	}
+
+	let withdraw_amount = creep.schedule_withdraw.amount;
+	let available = creep.store.getFreeCapacity(RESOURCE_ENERGY);
+	let needed = withdraw_amount - available;
+	if (needed <= 0) {
+		creep.task = 'perform';
+		source.complete_withdraw(creep);
+	}
+
 	let source = Game.getObjectById(this.scheduled_withdraw.source_id);
 	let highest_slot = _.sortByOrder(source.slots, ['energy_available'], ['desc'])[0];
 	let slot_room_pos = new RoomPosition(highest_slot.x, highest_slot.y, highest_slot.roomName);
+
 	if (this.pos.isNearTo(slot_room_pos)) {
 		let energy = slot_room_pos.lookFor(LOOK_ENERGY)[0];
-		this.pickup(energy);
+		source.pickup_energy_at(this, source, slot_room_pos);
 	} else {
 		this.travelTo(slot_room_pos);
-	}
-	let total_held = _.sum(this.carry);
-	if (total_held >= this.scheduled_withdraw.amount) {
-		source.complete_withdraw(this);
-		this.task = 'perform';
 	}
 };
 

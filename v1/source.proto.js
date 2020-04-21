@@ -27,6 +27,30 @@ Source.prototype.init = function() {
 	this.initialized = true;
 };
 
+Source.prototype.pickup_energy_at(creep, source, room_pos) {
+	let withdraw_amount = creep.schedule_withdraw.amount;
+	let available = creep.store.getFreeCapacity(RESOURCE_ENERGY);
+	let needed = withdraw_amount - available;
+	if (needed <= 0) {
+		creep.task = 'perform';
+		source.complete_withdraw(creep);
+	}
+
+	let dropped_energy = room_pos.lookFor(LOOK_ENERGY);
+	if (dropped_energy.length > 0) {
+		creep.pickup(dropped_energy[0]);
+		return;
+	}
+
+	let container = room_pos.lookFor(LOOK_STRUCTURES,
+		{filter: structure => structure.structureType == STRUCTURE_CONTAINER});
+	if (container.length > 0) {
+		let stored = container.store.getUsedCapacity(RESOURCE_ENERGY);
+		let to_withdraw = _.min([stored, needed]);
+		creep.withdraw(container[0], RESOURCE_ENERGY, to_withdraw);
+	}
+}
+
 Source.prototype.available_resources = function() {
 	let gross = _.sum(this.slots, 'energy_available');
 	let scheduled = _.sum(this.scheduled_withdraws);
