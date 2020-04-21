@@ -14,6 +14,8 @@ module.exports.loop = function() {
 	if (Memory.restart_memory) {
 		restart_memory();
 	}
+	_.each(Game.structures, overlord.register_spawn);
+	_.each(Game.creeps, overlord.register_creep);
+	_.each(Game.flags, overlord.register_flag);
 	overlord.tick();
-	_.each(Game.spawns, overlord.register_spawn);
 };
