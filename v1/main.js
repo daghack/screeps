@@ -4,8 +4,20 @@ require('creep.proto');
 require('source.proto');
 var m = require('manager');
 
-function clean_memory() {
+function needs_to_reset_memory() {
 	if (!Memory.init) {
+		Memory.init = true;
+		return true;
+	}
+	if (Game.flags.reset_memory) {
+		Game.flags.reset_memory.remove();
+		return true;
+	}
+	return false;
+}
+
+function clean_memory() {
+	if (needs_to_reset_memory()) {
 		_.forEach(Memory, (v, k) => delete Memory[k]);
 		Memory.init = true;
 		return true;
