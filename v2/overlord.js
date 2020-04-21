@@ -2,6 +2,7 @@ var Overlord = function Overlord() {
 	if (!Memory.overlord) {
 		initialize_overlord();
 	}
+	return Object.create(Overlord.prototype);
 };
 
 function initialize_overlord() {
