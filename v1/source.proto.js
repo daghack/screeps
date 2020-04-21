@@ -91,10 +91,19 @@ Source.prototype.schedule_harvester = function(manager, slot) {
 	}
 };
 
+Source.prototype.add_slot_build_orders = function(manager, room_pos) {
+	let constr = room_pos.lookFor(FIND_CONSTRUCTION_SITES, {filter: site => site.structureType == STRUCTURE_CONTAINER});
+	if (constr.length == 0) {
+		manager.schedule_build(this.room, STRUCTURE_CONTAINER, room_pos, true);
+	}
+
+};
+
 Source.prototype.tick = function(manager) {
 	console.log("Source " + this.id + " Tick");
 	_.forEach(this.slots, slot => {
 		let room_pos = new RoomPosition(slot.x, slot.y, this.room.name);
+		this.add_slot_build_orders(manager, room_pos);
 		slot.energy_available = energy_available_at(room_pos);
 		if (slot.assigned != NONE && !Game.creeps[slot.assigned]) {
 			slot.assigned = NONE;

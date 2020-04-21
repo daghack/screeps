@@ -64,10 +64,10 @@ Manager.prototype.ticks_alive = function() {
 	return Game.time - this.start_tick;
 };
 
-Manager.prototype.schedule_build = function(room, struct, poslike) {
+Manager.prototype.schedule_build = function(room, struct, poslike, overwrite) {
 	let pos = new RoomPosition(poslike.x, poslike.y, room.name);
 	let pos_str = pos.to_str();
-	if (!this.buildset[pos_str]) {
+	if (!this.buildset[pos_str] || overwrite) {
 		this.buildset[pos_str] = {x : pos.x, y : pos.y, room : pos.roomName, struct : struct};
 	}
 };
