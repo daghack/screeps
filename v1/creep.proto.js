@@ -62,6 +62,8 @@ Creep.prototype.travelTo = function(t) {
 		this.recache_path(t, false);
 	} else if (this.cache_index >= this.cached_path.length) {
 		this.recache_path(t, true);
+	} else if (!this.cached_path[this.cache_index]) {
+		this.recache_path(t, true);
 	}
 	this.room.visual.poly(this.cached_path.slice(this.cache_index),
 		{stroke : 'aqua', lineStyle : 'dashed', strokeWidth : 0.3, opacity : 0.2}
