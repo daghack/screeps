@@ -7,6 +7,9 @@ module.exports.loop = function() {
 	_.each(Game.spawns, function(spawn) {
 	});
 	_.each(Game.creeps, function(creep) {
+		if (creep.spawning) {
+			return;
+		}
 		if (creep.empty(RESOURCE_ENERGY) && creep.action != 'harvest') {
 			creep.action = 'harvest';
 			creep.target = _.sample(creep.room.sources).id;
