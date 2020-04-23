@@ -12,7 +12,7 @@ module.exports.loop = function() {
 			creep.target = _.sample(creep.room.sources).id;
 		} else if (creep.full(RESOURCE_ENERGY) && creep.action != 'deposit_energy') {
 			creep.action = 'deposit_energy';
-			creep.target = Game.spawns[0].id;
+			creep.target = _.sample(Game.spawns).id;
 		}
 		creep.perform_action();
 	});
