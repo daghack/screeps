@@ -9,10 +9,10 @@ module.exports.loop = function() {
 	_.each(Game.creeps, function(creep) {
 		if (creep.empty(RESOURCE_ENERGY) && creep.action != 'harvest') {
 			creep.action = 'harvest';
-			creep.target = _.sample(creep.room.sources);
+			creep.target = _.sample(creep.room.sources).id;
 		} else if (creep.full(RESOURCE_ENERGY) && creep.action != 'deposit_energy') {
 			creep.action = 'deposit_energy';
-			creep.target = Game.spawns[0];
+			creep.target = Game.spawns[0].id;
 		}
 		creep.perform_action();
 	});

@@ -1,6 +1,6 @@
 require('proto');
 
-memory_property(Creep.prototype, 'target', Object, true);
+memory_property(Creep.prototype, 'target', "");
 memory_property(Creep.prototype, 'action', "");
 
 Creep.prototype.stored = function(resource_type) {
@@ -69,6 +69,10 @@ Creep.prototype.deposit_energy_to = function(target) {
 
 Creep.prototype.perform_action = function() {
 	if (!this.target || !this.action || !this[this.action]) {
+		return ERR_INVALID_TARGET;
+	}
+	let target = Game.getObjectById(this.target);
+	if (!target) {
 		return ERR_INVALID_TARGET;
 	}
 	let result = this[this.action](this.target);
