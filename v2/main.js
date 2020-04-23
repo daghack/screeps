@@ -12,10 +12,10 @@ module.exports.loop = function() {
 		}
 		if (creep.empty(RESOURCE_ENERGY) && creep.action != 'harvest') {
 			creep.action = 'harvest';
-			creep.target = _.sample(creep.room.sources()).id;
+			creep.target_id = _.sample(creep.room.sources()).id;
 		} else if (creep.full(RESOURCE_ENERGY) && creep.action != 'deposit_energy') {
 			creep.action = 'deposit_energy';
-			creep.target = _.sample(Game.spawns).id;
+			creep.target_id = _.sample(Game.spawns).id;
 		}
 		creep.perform_action();
 	});

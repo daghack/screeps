@@ -1,6 +1,6 @@
 require('proto');
 
-memory_property(Creep.prototype, 'target', "");
+memory_property(Creep.prototype, 'target_id', "");
 memory_property(Creep.prototype, 'action', "");
 
 Creep.prototype.stored = function(resource_type) {
@@ -68,16 +68,16 @@ Creep.prototype.deposit_energy_to = function(target) {
 };
 
 Creep.prototype.perform_action = function() {
-	if (!this.target || !this.action || !this[this.action]) {
+	if (!this.target_id || !this.action || !this[this.action]) {
 		return ERR_INVALID_TARGET;
 	}
 	let target = Game.getObjectById(this.target);
 	if (!target) {
 		return ERR_INVALID_TARGET;
 	}
-	let result = this[this.action](this.target);
+	let result = this[this.action](target);
 	if (result == ERR_NOT_IN_RANGE) {
-		return this.move_to(this.target);
+		return this.move_to(target);
 	}
 	return result;
 };
