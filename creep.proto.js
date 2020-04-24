@@ -1,8 +1,3 @@
-require('proto');
-
-memory_property(Creep.prototype, 'target_id', "");
-memory_property(Creep.prototype, 'action', "");
-
 Creep.prototype.stored = function(resource_type) {
 	return this.store.getUsedCapacity(resource_type);
 };
@@ -63,21 +58,6 @@ Creep.prototype.pickup_energy = function(target) {
 	return this.pickup_from(target, RESOURCE_ENERGY);
 };
 
-Creep.prototype.deposit_energy_to = function(target) {
+Creep.prototype.deposit_energy = function(target) {
 	return this.deposit_to(target, RESOURCE_ENERGY);
-};
-
-Creep.prototype.perform_action = function() {
-	if (!this.target_id || !this.action || !this[this.action]) {
-		return ERR_INVALID_TARGET;
-	}
-	let target = Game.getObjectById(this.target);
-	if (!target) {
-		return ERR_INVALID_TARGET;
-	}
-	let result = this[this.action](target);
-	if (result == ERR_NOT_IN_RANGE) {
-		return this.move_to(target);
-	}
-	return result;
 };
